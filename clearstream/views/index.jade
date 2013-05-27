@@ -18,4 +18,4 @@ html
                         span(id="last-update") Never
             ul
                 each val, key in data.keywords
-                    li(data-keyword="#{key}")= key
+                    li(data-keyword="#{key}", title="#{val}")= key

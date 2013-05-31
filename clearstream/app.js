@@ -17,8 +17,8 @@ var app = express();
 var server = http.createServer(app);
 
 //keywords to track
-var watchKeywords = ['$msft', '$intc', '$hpq', '$goog', '$nok', '$nvda', '$bac', '$orcl', '$csco', '$aapl', '$ntap', '$emc', '$t', '$ibm', '$vz', '$xom', '$cvx', '$ge', '$ko', '$jnj'];
-
+//var watchKeywords = ['$msft', '$intc', '$hpq', '$goog', '$nok', '$nvda', '$bac', '$orcl', '$csco', '$aapl', '$ntap', '$emc', '$t', '$ibm', '$vz', '$xom', '$cvx', '$ge', '$ko', '$jnj'];
+var watchKeywords = ['iPhone', 'android'];
 /* Keep the total number of tweets received and a map of all the 
  * keywords and how many tweets received of that keyword
  */
@@ -78,7 +78,7 @@ sockets.sockets.on('connection', function(socket) {
 });
 
 //Tell the twitter API to filter on the watchKeywords 
-t.stream('statuses/filter', { track: watchKeywords }, function(stream) {
+t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(stream) {
  
   //We have a connection. Now watch the 'data' event for incomming tweets.
   stream.on('data', function(tweet) {
@@ -95,6 +95,7 @@ t.stream('statuses/filter', { track: watchKeywords }, function(stream) {
  
       //We'll do some indexOf comparisons and we want it to be case agnostic.
       var text = tweet.text.toLowerCase();
+      console.log(text);
  
       /* Go through every symbol and see if it was mentioned. If so, increment its counter and
        * set the 'claimed' variable to true to indicate something was mentioned so we can 

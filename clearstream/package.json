@@ -16,6 +16,7 @@
     "jade": "*",
     "socket.io": "*",
     "underscore": "*",
-    "ntwitter": "*"
+    "ntwitter": "*",
+    "unshortener": ">=0.1.0"
   }
 }

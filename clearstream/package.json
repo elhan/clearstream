@@ -1,15 +1,22 @@
 {
   "name": "clearstream",
+  "description": "A simple tool to explore twitter's streaming API",
   "version": "0.0.1",
+  "homepage": "https://github.com/KPouianou/clearstream",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KPouianou/clearstream.git"
+  },
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.2.5",
+    "express": ">=3.2.5",
     "jade": "*",
     "socket.io": "*",
     "underscore": "*",
-    "ntwitter": "*"
+    "ntwitter": "*",
+    "unshortener": ">=0.1.0"
   }
 }

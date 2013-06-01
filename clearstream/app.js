@@ -6,9 +6,11 @@ var express = require('express')
   , io = require('socket.io')
   , http = require('http')
   , path = require('path')
+  , _ = require('underscore')
   , twitter = require('ntwitter')
+  , unshortener = require('unshortener')
   , credentials = require('./credentials.js')
-  , _ = require('underscore');
+  , utils = require('./utils.js');
 
 //Create an express app
 var app = express();
@@ -17,18 +19,7 @@ var app = express();
 var server = http.createServer(app);
 
 //keywords to track
-//var watchKeywords = ['$msft', '$intc', '$hpq', '$goog', '$nok', '$nvda', '$bac', '$orcl', '$csco', '$aapl', '$ntap', '$emc', '$t', '$ibm', '$vz', '$xom', '$cvx', '$ge', '$ko', '$jnj'];
-var watchKeywords = ['iPhone', 'android'];
-/* Keep the total number of tweets received and a map of all the 
- * keywords and how many tweets received of that keyword
- */
-var watchList = {
-    total: 0,
-    keywords: {}
-};
-
-//Set the watch keywords to zero.
-_.each(watchKeywords, function(v) { watchList.keywords[v] = 0; });
+var watchKeywords = ['ο', 'η', 'το', 'τον', 'του', 'της', 'τους', 'τις', 'στο', 'στον', 'στη', 'στην', 'στους', 'στις', 'αν', 'και', 'κι', 'θα', 'τα', 'να', 'αν'];
 
 var t = new twitter({
     consumer_key: credentials.consumer_key,
@@ -54,6 +45,8 @@ app.use('/components', express.static(path.join(__dirname, 'components')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+
+var watchList = {};
 
 //Only one route. Render it with the current watchList
 app.get('/trending', function(req, res) {
@@ -82,41 +75,18 @@ t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(s
  
   //We have a connection. Now watch the 'data' event for incomming tweets.
   stream.on('data', function(tweet) {
- 
-    /* This variable is used to indicate whether a symbol was actually mentioned.
-     * Since twitter doesnt why the tweet was forwarded we have to search through the text
-     * and determine which symbol it was ment for. Sometimes we can't tell, in which case we don't
-     * want to increment the total counter...
-     */
-    var claimed = false;
- 
     //Make sure it was a valid tweet
-    if (tweet.text !== undefined) {
- 
-      //We'll do some indexOf comparisons and we want it to be case agnostic.
-      var text = tweet.text.toLowerCase();
-      console.log(text);
- 
-      /* Go through every symbol and see if it was mentioned. If so, increment its counter and
-       * set the 'claimed' variable to true to indicate something was mentioned so we can 
-       * increment the 'total' counter!
-       */
-      _.each(watchKeywords, function(v) {
-      	  //check if the tweet's text contains the symbol.
-          if (text.indexOf(v.toLowerCase()) !== -1) {
-			watchList.keywords[v]++;
-       		claimed = true;
-          }
-      });
- 
-      //If something was mentioned, increment the total counter and send the update to all the clients
-      if (claimed) {
-          //Increment total
-          watchList.total++;
- 
-          //Send to all the clients
-          sockets.sockets.emit('data', watchList);
+    if (tweet.text !== undefined) {  
+    	console.log(tweet);
+      if(tweet.entities.urls.length>0) {
+    	  console.log(tweet.entities.urls[0].expanded_url);
+    	  unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
+            // url is a url object
+            console.log(url.href);
+          });
       }
+      //Send to all the clients
+      sockets.sockets.emit('data', watchList);
     }
   });
 });

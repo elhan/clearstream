@@ -81,8 +81,13 @@ t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(s
       if(tweet.entities.urls.length>0) {
     	  console.log(tweet.entities.urls[0].expanded_url);
     	  unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
-            // url is a url object
-            console.log(url.href);
+    	  console.log(url.href);  
+    		  
+    		//TODO//
+    		/* implement space saving algorithm. Keep a list of 50 most frequent urls in a
+    		 * structure such as [{url: 'url', freq: 'freq'}, ...]
+    		 */
+            
           });
       }
       //Send to all the clients

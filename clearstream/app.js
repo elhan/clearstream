@@ -70,24 +70,47 @@ sockets.sockets.on('connection', function(socket) {
   socket.emit('data', watchList);
 });
 
+//initialize list for space saving algorithm
+var urlList = [];
+var urlListLength = 50;
+
 //Tell the twitter API to filter on the watchKeywords 
 t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(stream) {
  
-  //We have a connection. Now watch the 'data' event for incomming tweets.
+  //We have a connection. Now watch the 'data' event for incoming tweets.
   stream.on('data', function(tweet) {
     //Make sure it was a valid tweet
-    if (tweet.text !== undefined) {  
-    	console.log(tweet);
+    if (tweet.text !== undefined) {
+        console.log(tweet);
       if(tweet.entities.urls.length>0) {
-    	  console.log(tweet.entities.urls[0].expanded_url);
-    	  unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
-    	  console.log(url.href);  
-    		  
-    		//TODO//
-    		/* implement space saving algorithm. Keep a list of 50 most frequent urls in a
-    		 * structure such as [{url: 'url', freq: 'freq'}, ...]
-    		 */
-            
+          console.log(tweet.entities.urls[0].expanded_url);
+          unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
+              console.log(url.href);  
+              
+              /* implement space saving algorithm. Keep a list of 50 most frequent urls in a
+               * structure such as [{url: 'url', freq: 'freq'}, ...]
+               * */
+              var urlItem = _.find(urlList, function(urlObject){
+                  if (urlObject.url == url.href)
+                      return true; });
+
+              // check if url already exists in list then increase the frequency, otherwise add it
+              if (urlItem !== undefined){
+                  urlItem.freq += 1;
+              }
+              else {
+                  // check if list is full
+                  if (_.size(urlList) < urlListLength){
+                      urlList.push({url: url.href, freq: 1});
+                  }
+                  else{
+                      // find and remove the item with the lowest count and add the new one with increased count.
+                      var min = _.min(urlList, function(o){return o.freq;});
+                      console.log("MIN:"+ min.freq + " " + min.url);
+                      min.url = url.href;
+                      min.freq += min.freq;
+                  }
+              }
           });
       }
       //Send to all the clients

@@ -81,11 +81,25 @@ t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(s
   stream.on('data', function(tweet) {
     //Make sure it was a valid tweet
     if (tweet.text !== undefined) {
-        console.log(tweet);
-      if(tweet.entities.urls.length>0) {
+        //console.log(tweet);
+        console.log(tweet.created_at);
+      
+        if(tweet.entities.urls.length>0) {
           console.log(tweet.entities.urls[0].expanded_url);
           unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
               console.log(url.href);  
+              
+              // calculate score as: log((1 + followers)^2)-2
+              var followersCount = tweet.user.followers_count;
+              var pow = Math.pow(1 + followersCount, 2);
+              var score = 0.01;
+              
+              // verify for positive score
+              if (pow > 9){
+                  score = Math.log(pow) - 2;
+              }
+              
+              console.log("Score:" + score + " fol:" + followersCount + " url:" + url.href);
               
               /* implement space saving algorithm. Keep a list of 50 most frequent urls in a
                * structure such as [{url: 'url', freq: 'freq'}, ...]
@@ -94,23 +108,43 @@ t.stream('statuses/filter', { track: watchKeywords, language: 'el' }, function(s
                   if (urlObject.url == url.href)
                       return true; });
 
-              // check if url already exists in list then increase the frequency, otherwise add it
+              // check if url already exists in list then update the frequency and the score, otherwise add it
               if (urlItem !== undefined){
                   urlItem.freq += 1;
+                  
+                  // TODO: check if is the following approach correct
+                  // if previous score is better keep it (with the new freq?), otherwise set the new score
+                  if (urlItem.score > score){
+                      urlItem.score = urlItem.score * urlItem.freq;
+                  }
+                  else{
+                      urlItem.score = score * urlItem.freq;
+                  }
               }
               else {
                   // check if list is full
                   if (_.size(urlList) < urlListLength){
-                      urlList.push({url: url.href, freq: 1});
+                      urlList.push({url: url.href, freq: 1, score: score});
+                      console.log("Adding:" + url.href + " with score: " + score);
                   }
                   else{
-                      // find and remove the item with the lowest count and add the new one with increased count.
-                      var min = _.min(urlList, function(o){return o.freq;});
-                      console.log("MIN:"+ min.freq + " " + min.url);
+                      // find and remove the item with the lowest count and add the new one with increased count and new score
+                      var min = _.min(urlList, function(o){return o.score;});
+                      console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
                       min.url = url.href;
-                      min.freq += min.freq;
+                      min.freq += 1;
+                      min.score = min.freq * score;
                   }
               }
+              
+              // Temp log of the list
+              var a = _.sortBy(urlList, function(num){ return num.score; });
+              console.log("****");
+              for (var i in a)
+            	  {
+            	  console.log("url: "+ urlList[i].url + " freq:" + urlList[i].freq + " score: " + urlList[i].score);
+            	  }
+              console.log("******");
           });
       }
       //Send to all the clients

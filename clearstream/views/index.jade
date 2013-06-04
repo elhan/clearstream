@@ -1,21 +1,18 @@
 doctype 5
 html
     head
-        title Node.js, Twitter Stream, Socket.io
+        title Clearstream
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="components/socket.io-client/dist/socket.io.min.js")
-        script(src="/javascripts/script.js")
+        script(src="/javascripts/index.js")
+        
     body
         .container
             .header
-                h1 ClearStream
-                small 
-                    | Filter Twitter's stream api for trending links
-                small
-                    i
-                        | Last updated:
-                        span(id="last-update") Never
-            ul
-                each val, key in data.keywords
-                    li(data-keyword="#{key}", title="#{val}")= key
+                h1 CLEARSTREAM
+                #expl trending news in Greece
+            ul#links
+              each link, index in data
+                li.link
+                  p.url <a href = #{link.url} target='_blank'>#{link.url}</a>

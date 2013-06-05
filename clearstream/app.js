@@ -9,8 +9,7 @@ var express = require('express')
   , twitter = require('ntwitter')
   , credentials = require('./credentials.js')
   , aux = require('./auxiliary.js')
-  , keywords = require('./keywords.js')
-  , utils = require('./utils.js');
+  , keywords = require('./keywords.js');
 
 //Create an express app
 var app = express();
@@ -78,6 +77,7 @@ var urlListLength = 10;
 /* Start a connection with twitter's Streaming API, and filter tweets that
  * contain one of the listed keywords and their language is Greek.
  */
+
 t.stream('statuses/filter', { track: keywords.toTrack, language: 'el' }, function(stream) {
   //We have a connection. Now watch the 'data' event for incoming tweets.
   stream.on('data', function(tweet) {

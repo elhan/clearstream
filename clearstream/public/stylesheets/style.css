@@ -1,7 +1,7 @@
 #clearstream-app {
 	margin-left: auto;
 	margin-right:auto;
-	width: 85%;
+	width: 62%;
 	color: rgb(51, 51, 50);
 }
 
@@ -24,11 +24,37 @@
 	color: rgb(179, 179, 177);
 }
 
+a {
+	color: rgb(51, 51, 50);
+}
+
+a:hover, a:focus {
+	color: rgb(179, 179, 177);
+}
+
+.url {
+	font-size: 18px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 0px;
+}
+
+.url-info {
+	color: rgb(179, 179, 177);
+	font-size: 10px;
+	margin-bottom: 20px;
+}
+
+#date-value {
+	margin-left: 10px;
+}
+
 #main {
 	margin-top: 40px;
 }
 
 h3 {
+	margin-top: 20px;
 	color: rgb(179, 179, 177);
 }
 

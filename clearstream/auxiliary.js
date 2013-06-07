@@ -1,16 +1,31 @@
 var _ = require('underscore')
   , unshortener = require('unshortener')
+  , Readability = require("readabilitySAX/readabilitySAX.js")
+  , Parser = require("readabilitySAX/node_modules/htmlparser2/lib/Parser.js")
+  , readable = new Readability({})
+  , parser = new Parser(readable, {})
+  , request = require('request')
+  ,	moment = require('moment')
   , keywords = require('./keywords.js');
 
+//expressions to clean the article fetched
+var tags = /(<([^>]+)>)/ig;
+var scripts = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 
 // gravity determines the speed at which time decay sets in.
 var gravity = 1.5;
+
 
 /* 
  * Returns the Score of a tweet based on the author's follower_count
  */
 function tweetScore(tweet) {
-  return Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2; 
+  var score = 0.01;
+  if(tweet.user.followers_count > 9){
+	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
+  }
+  var decay = timeDecay(tweet);
+  return score/decay;
 }
 
 
@@ -18,22 +33,11 @@ function tweetScore(tweet) {
  * Returns the time decay factor for a link. Similar to HN algorithm.
  */
  
-function timeDecay(urlItem) {
+function timeDecay(tweet) {
   var now = new Date();
-  var created_at = urlItem.created_at;
-  //var created_at = new Date ("June 03, 2013 12:48:00");
+  var created_at = new Date(tweet.created_at);
   var diffenceInHours = ( now.getTime()-created_at.getTime() ) / 3600000;
   return ( Math.pow( (diffenceInHours+2), gravity) );
-};
-
-
-/* 
- * Calculates the current rank of a link
- */
-
-function rank(urlItem) {
-  //console.log('score: ..... ' + urlItem.score + '     time decay: ..... ' +timeDecay(urlItem)+ '     rank: ...... ' + urlItem.score / timeDecay(urlItem));
-  return urlItem.score / timeDecay(urlItem);
 };
 
 
@@ -52,7 +56,7 @@ function isSpam(link, spamWords) {
 };
 
 
-/* The basic algorith. Takes the urlList, the list's max length
+/* The basic algorithm. Takes the urlList, the list's max length
  * and a tweet object as parameters, and updates the list
  */
  
@@ -62,47 +66,55 @@ exports.spaceSaving =  function(urlList, urlListLength, tweet) {
   
 	//check if the tweet contains a url
 	if(tweet.entities.urls.length>0) {
-	  //console.log(tweet.entities.urls[0].expanded_url);
-	  unshortener.expand(tweet.entities.urls[0].expanded_url, function (err, url) {
+	  request(tweet.entities.urls[0].expanded_url,  function (error, response, body) {
 	  
-	  //check for spam links
-	  if(!isSpam(url, keywords.spamUrls)) {
-	  	var score = 0.01;   
-	   
-      	// verify for positive score
-      	if (tweet.user.followers_count > 9){
-          score = tweetScore(tweet);
-      	}
-      
-      	//check if url already exists in list 
-      	var urlItem = _.find(urlList, function(urlObject) {
-          if (urlObject.url == url.href) return true; 
-      	});
+	  	var expanded_url = tweet.entities.urls[0].expanded_url;
+	  	var article = {};
+  	
+		if (!error && response.statusCode == 200) {
+	  	  body = body.replace(scripts, "");
+	  	  parser.write(body);
+	  	  article = readable.getArticle();
+	  	  //remove multiple white spaces
+	  	  article.html = article.html.replace(/\s+/g, ' ');
+	  	  //remove html tags
+	  	  article.html = article.html.replace(tags, "");
+    	}
+    	
+    	//unshorten url and consrtuct the respons eobject
+	    unshortener.expand(expanded_url, function (err, url) {
+	      //check for spam links
+	      if(!isSpam(url, keywords.spamUrls)) {
+      	    //check if url already exists in list 
+      	    var urlItem = _.find(urlList, function(urlObject) {
+              if (urlObject.url == url.href) return true; 
+      	    });
 
-      	// update the frequency and the score
-      	if (urlItem !== undefined) {
-          urlItem.freq += 1; 
-      	  // if previous score is better keep it (with the new freq?), otherwise set the new score
-      	  if (urlItem.score > score) {
-            urlItem.score = urlItem.score * urlItem.freq;
-      	  } else {
-            urlItem.score = score * urlItem.freq;
-      	  }
-      	} else {
-          // check if list is full
-          if (_.size(urlList) < urlListLength){
-            urlList.push({url: url.href, freq: 1, score: score, created_at: new Date(tweet.created_at) });
-          } else {
-            // find and remove the item with the lowest count and add the new one with increased count and new score
-            var min = _.min(urlList, function(o){return rank(o)});
-            //console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
-            min.url = url.href;
-            min.freq += 1;
-            min.score = min.freq * score;
-      	  }
-        }
-      }
-      }); //expand url
+      	    // update the frequency and the score (the time decay is included in the score)
+      	    if (urlItem !== undefined) {
+              urlItem.freq += 1; 
+          
+      	      // if previous score is better keep it otherwise set the new score
+      	      if (urlItem.score > tweetScore(tweet)) {
+                urlItem.score = tweetScore(tweet);
+      	      }
+      	    } else {
+              // check if list is full
+              if (_.size(urlList) < urlListLength){
+                urlList.push({url: url.href, freq: 1, score: tweetScore(tweet), created_at: moment(new Date(tweet.created_at)).format('MMM Do, HH:mm:ss').toString(), article: article});
+              } else {
+                // find and remove the item with the lowest count*score, and add the new one with increased count and new score
+                var min = _.min(urlList, function(link){return link.score*link.freq});
+                //console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
+                min.url = url.href;
+                min.freq += 1;
+                min.score = tweetScore(tweet);
+                min.article = article;
+      	      }
+      	    }
+          }
+        }); //expand url
+      });
 	}
   }
 };

@@ -7,7 +7,6 @@ html
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
         script(src="/components/socket.io-client/dist/socket.io.min.js")
         script(src="/javascripts/index.js")
-        script(src="../node_modules/moments/moments.js")
         
     body
         section#clearstream-app
@@ -19,12 +18,15 @@ html
                 h5.description-title
                   span WHAT'S HOT RIGHT NOW?
             section#main
-              ul#links
+              ol#links
                 each link, index in data
                   li.link
                     p.url <a href = #{link.url} target='_blank'>#{link.article.title}</a>
                     p.url-info
-                      span#date-text last mentioned on:
-                      span#date-value #{link.created_at}
+                      span.link-footer-text last mentioned on
+                      span.link-footer-value #{link.created_at}
+                      span.separator |
+                      span.link-footer-text mentions:
+                      span.link-footer-value #{link.freq}
             footer#footer
-              span#new-links #{data.length}              
+              span#new-links #{data.length}         

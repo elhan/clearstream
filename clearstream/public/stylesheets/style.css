@@ -45,8 +45,18 @@ a:hover, a:focus {
 	margin-bottom: 20px;
 }
 
-#date-value {
-	margin-left: 10px;
+.link-footer-text {
+	margin-right: 5px;
+	margin-left: 0px;
+}
+
+.link-footer-value {
+	margin-left: 0px;
+}
+
+.separator {
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
 #main {

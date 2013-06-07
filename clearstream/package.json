@@ -17,7 +17,6 @@
     "socket.io": "*",
     "underscore": "*",
     "ntwitter": "*",
-    "unshortener": ">=0.1.0",
     "readabilitySAX": "*",
     "request": "*",
     "moment" : "*"

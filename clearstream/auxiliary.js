@@ -1,5 +1,4 @@
 var _ = require('underscore')
-  , unshortener = require('unshortener')
   , Readability = require("readabilitySAX/readabilitySAX.js")
   , Parser = require("readabilitySAX/node_modules/htmlparser2/lib/Parser.js")
   , readable = new Readability({})

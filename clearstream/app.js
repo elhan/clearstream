@@ -69,7 +69,7 @@ sockets.sockets.on('connection', function(socket) {
 });
 
 
-//initialize list for space saving algorithm
+//initialise list for space saving algorithm
 var urlList = [];
 var urlListLength = 10;
 

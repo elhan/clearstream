@@ -48,7 +48,7 @@ function timeDecay(tweet) {
 function isSpam(link, spamWords) {
   var isSpam = false;
   for(var i=0; i<spamWords.length; i++) {
-  	if(link.href.indexOf(spamWords[i]) !== -1) {
+  	if(link.hostname.indexOf(spamWords[i]) !== -1) {
 	  isSpam = true;
   	}
   }
@@ -67,8 +67,7 @@ exports.spaceSaving =  function(urlList, urlListLength, tweet) {
 	//check if the tweet contains a url
 	if(tweet.entities.urls.length>0) {
 	  request(tweet.entities.urls[0].expanded_url,  function (error, response, body) {
-	  
-	  	var expanded_url = tweet.entities.urls[0].expanded_url;
+	  	var url = response.request.uri;
 	  	var article = {};
   	
 		if (!error && response.statusCode == 200) {
@@ -80,41 +79,38 @@ exports.spaceSaving =  function(urlList, urlListLength, tweet) {
 	  	  //remove html tags
 	  	  article.html = article.html.replace(tags, "");
     	}
-    	
-    	//unshorten url and consrtuct the respons eobject
-	    unshortener.expand(expanded_url, function (err, url) {
-	      //check for spam links
-	      if(!isSpam(url, keywords.spamUrls)) {
-      	    //check if url already exists in list 
-      	    var urlItem = _.find(urlList, function(urlObject) {
-              if (urlObject.url == url.href) return true; 
-      	    });
+    	console.log();
+      //check for spam links
+      if(!isSpam(url, keywords.spamUrls)) {
+    	    //check if url already exists in list 
+    	    var urlItem = _.find(urlList, function(urlObject) {
+            if (urlObject.url == response.request.uri.href) return true; 
+    	    });
 
-      	    // update the frequency and the score (the time decay is included in the score)
-      	    if (urlItem !== undefined) {
-              urlItem.freq += 1; 
-          
-      	      // if previous score is better keep it otherwise set the new score
-      	      if (urlItem.score > tweetScore(tweet)) {
-                urlItem.score = tweetScore(tweet);
-      	      }
-      	    } else {
-              // check if list is full
-              if (_.size(urlList) < urlListLength){
-                urlList.push({url: url.href, freq: 1, score: tweetScore(tweet), created_at: moment(new Date(tweet.created_at)).format('MMM Do, HH:mm:ss').toString(), article: article});
-              } else {
-                // find and remove the item with the lowest count*score, and add the new one with increased count and new score
-                var min = _.min(urlList, function(link){return link.score*link.freq});
-                //console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
-                min.url = url.href;
-                min.freq += 1;
-                min.score = tweetScore(tweet);
-                min.article = article;
-      	      }
-      	    }
-          }
-        }); //expand url
-      });
+    	    // update the frequency and the score (the time decay is included in the score)
+    	    if (urlItem !== undefined) {
+            urlItem.freq += 1; 
+        
+    	      // if previous score is better keep it otherwise set the new score
+    	      if (urlItem.score > tweetScore(tweet)) {
+              urlItem.score = tweetScore(tweet);
+    	      }
+    	    } else {
+            // check if list is full
+            if (_.size(urlList) < urlListLength){
+              urlList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: moment(new Date(tweet.created_at)).format('MMM Do, HH:mm:ss').toString(), article: article});
+            } else {
+              // find and remove the item with the lowest count*score, and add the new one with increased count and new score
+              var min = _.min(urlList, function(link){return link.score*link.freq});
+              //console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
+              min.url = url.href;
+              min.freq += 1;
+              min.score = tweetScore(tweet);
+              min.article = article;
+    	      }
+    	    }
+        }
+     });
 	}
   }
 };

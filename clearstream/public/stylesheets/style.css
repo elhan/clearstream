@@ -32,14 +32,20 @@ a:hover, a:focus {
 	color: rgb(179, 179, 177);
 }
 
-.url {
+#link-title {
 	font-size: 18px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	margin-bottom: 0px;
 }
 
-.url-info {
+#link-hostname {
+	margin-left: 10px;
+	color: rgb(179, 179, 177);
+	font-size: 12px;
+}
+
+#link-info {
 	color: rgb(179, 179, 177);
 	font-size: 10px;
 	margin-bottom: 20px;
@@ -60,7 +66,11 @@ a:hover, a:focus {
 }
 
 #main {
-	margin-top: 40px;
+	margin-top: 20px;
+}
+
+#refresh {
+	margin-bottom: 5px;
 }
 
 h3 {

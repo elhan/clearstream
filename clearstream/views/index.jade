@@ -18,11 +18,14 @@ html
                 h5.description-title
                   span WHAT'S HOT RIGHT NOW?
             section#main
+              button.btn.btn-inverse#refresh refresh
               ol#links
                 each link, index in data
                   li.link
-                    p.url <a href = #{link.url} target='_blank'>#{link.article.title}</a>
-                    p.url-info
+                    p 
+                    span#link-title <a href = #{link.url.href} target=_blank>#{link.article.title}</a>
+                    span#link-hostname  #{link.url.hostname}
+                    p#link-info
                       span.link-footer-text last mentioned on
                       span.link-footer-value #{link.created_at}
                       span.separator |

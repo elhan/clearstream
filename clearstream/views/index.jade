@@ -4,15 +4,19 @@ html
         title Clearstream
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
-        script(src="../components/socket.io-client/dist/socket.io.min.js")
-        script(src="../public/javascripts/index.js")
+        script(src="/components/socket.io-client/dist/socket.io.min.js")
+        script(src="/javascripts/index.js")
         
     body
-        .container
-            .header
-                h1 CLEARSTREAM
-                #expl trending news in Greece
-            ul#links
-              each link, index in data
-                li.link
-                  p.url <a href = #{link.url} target='_blank'>#{link.url}</a>
+        section#clearstream-app
+            .header#header
+              h1 CLEARSTREAM
+              h3 filter out the noise
+            section#main
+              ul#links
+                each link, index in data
+                  li.link
+                    p.url <a href = #{link.url} target='_blank'>#{link.url}</a>
+            footer#footer
+              span#new-links #{data.length}
+              

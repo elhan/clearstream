@@ -5,6 +5,5 @@ $(function () {
   
   socket.on('data', function(data) {
     console.log(data);
-    window.location.reload();
   });
 });

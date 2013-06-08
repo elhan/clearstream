@@ -2,10 +2,13 @@ doctype 5
 html
     head
         title Clearstream
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css")
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css")
         link(rel='stylesheet', href='http://bootswatch.com/cosmo/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
         script(src="http://code.jquery.com/jquery-1.9.1.min.js")
-        script(src="/components/socket.io-client/dist/socket.io.min.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
+        //- script(src="/components/socket.io-client/dist/socket.io.min.js")
         script(src="/javascripts/index.js")
         
     body
@@ -18,7 +21,7 @@ html
                 h5.description-title
                   span WHAT'S HOT RIGHT NOW?
             section#main
-              button.btn.btn-inverse#refresh refresh
+              button.btn.btn-inverse#refresh  <i class="icon-refresh"></i> refresh
               ol#links
                 each link, index in data
                   li.link
@@ -27,9 +30,9 @@ html
                     span#link-hostname  #{link.url.hostname}
                     p#link-info
                       span.link-footer-text last mentioned on
-                      span.link-footer-value #{link.created_at}
+                      span.link-footer-value #{moment(link.created_at).format('MMM Do, HH:mm:ss')}
                       span.separator |
                       span.link-footer-text mentions:
                       span.link-footer-value #{link.freq}
             footer#footer
-              span#new-links #{data.length}         
+              span#new-links #{data.length}    

@@ -73,6 +73,10 @@ a:hover, a:focus {
 	margin-bottom: 5px;
 }
 
+#refresh i {
+	font-size: 16px;
+}
+
 h3 {
 	margin-top: 20px;
 	color: rgb(179, 179, 177);

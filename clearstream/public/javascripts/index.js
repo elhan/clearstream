@@ -5,6 +5,6 @@ $(function () {
   console.log(window.location.hostname);
   
   socket.on('data', function(data) {
-    console.log(data);
+    console.log( moment(new Date()).format('MMM Do, HH:mm:ss') );
   });
 });

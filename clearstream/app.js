@@ -33,6 +33,7 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.locals.moment = require('moment');
 
 
 //We're using bower components so add it to the path to make things easier
@@ -64,9 +65,9 @@ sockets.configure(function() {
  */
  
 //If the client just connected, give them fresh data!
-sockets.sockets.on('connection', function(socket) { 
-  socket.emit('data', urlList);
-});
+//sockets.sockets.on('connection', function(socket) { 
+//  socket.emit('data', urlList);
+//});
 
 
 //initialise list for space saving algorithm
@@ -82,7 +83,7 @@ t.stream('statuses/filter', { track: keywords.toTrack, language: 'el' }, functio
   //We have a connection. Now watch the 'data' event for incoming tweets.
   stream.on('data', function(tweet) {
   	aux.spaceSaving(urlList, urlListLength, tweet);
-  	sockets.sockets.emit('data', urlList);
+  	//sockets.sockets.emit('data', urlList);
   });
 });
       

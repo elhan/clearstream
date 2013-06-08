@@ -4,7 +4,6 @@ var _ = require('underscore')
   , readable = new Readability({})
   , parser = new Parser(readable, {})
   , request = require('request')
-  ,	moment = require('moment')
   , keywords = require('./keywords.js');
 
 //expressions to clean the article fetched
@@ -23,8 +22,7 @@ function tweetScore(tweet) {
   if(tweet.user.followers_count > 9){
 	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
   }
-  var decay = timeDecay(tweet);
-  return score/decay;
+  return score;
 }
 
 
@@ -32,12 +30,25 @@ function tweetScore(tweet) {
  * Returns the time decay factor for a link. Similar to HN algorithm.
  */
  
-function timeDecay(tweet) {
+function timeDecay(link) {
   var now = new Date();
-  var created_at = new Date(tweet.created_at);
+  var created_at = new Date(link.created_at);
   var diffenceInHours = ( now.getTime()-created_at.getTime() ) / 3600000;
   return ( Math.pow( (diffenceInHours+2), gravity) );
 };
+
+
+/* Calculate a link's current rank. Takes into account time decay, score
+ * and frequency. Used for finding the minimum element in a link list and
+ * to order the list when necessary.
+ */
+
+function rank(link) {
+  var decay = timeDecay(link);
+  var score = link.score;
+  var frequency = link.freq;
+  return frequency*(score/decay);
+}
 
 
 /*
@@ -55,61 +66,66 @@ function isSpam(link, spamWords) {
 };
 
 
-/* The basic algorithm. Takes the urlList, the list's max length
+/* The basic algorithm. Takes the linkList, the list's max length
  * and a tweet object as parameters, and updates the list
  */
  
-exports.spaceSaving =  function(urlList, urlListLength, tweet) {
+exports.spaceSaving =  function(linkList, linkListLength, tweet) {
   //Make sure it was a valid tweet
   if (tweet.text !== undefined) {
   
 	//check if the tweet contains a url
 	if(tweet.entities.urls.length>0) {
 	  request(tweet.entities.urls[0].expanded_url,  function (error, response, body) {
+	  
+    if(response !== undefined) {
 	  	var url = response.request.uri;
 	  	var article = {};
-  	
-		if (!error && response.statusCode == 200) {
-	  	  body = body.replace(scripts, "");
-	  	  parser.write(body);
-	  	  article = readable.getArticle();
-	  	  //remove multiple white spaces
-	  	  article.html = article.html.replace(/\s+/g, ' ');
-	  	  //remove html tags
-	  	  article.html = article.html.replace(tags, "");
-    	}
-    	console.log();
-      //check for spam links
-      if(!isSpam(url, keywords.spamUrls)) {
-    	    //check if url already exists in list 
-    	    var urlItem = _.find(urlList, function(urlObject) {
-            if (urlObject.url == response.request.uri.href) return true; 
+	
+  		if (  error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)  ) {
+  	  	  body = body.replace(scripts, "");
+  	  	  parser.write(body);
+  	  	  article = readable.getArticle();
+  	  	  //remove multiple white spaces
+  	  	  article.html = article.html.replace(/\s+/g, ' ');
+  	  	  //remove html tags
+  	  	  article.html = article.html.replace(tags, "");
+
+    	    //check if the article has already been linked
+    	    var link = _.find(linkList, function(urlObject) {
+    	      return urlObject.article.title == article.title; 
     	    });
 
-    	    // update the frequency and the score (the time decay is included in the score)
-    	    if (urlItem !== undefined) {
-            urlItem.freq += 1; 
-        
-    	      // if previous score is better keep it otherwise set the new score
-    	      if (urlItem.score > tweetScore(tweet)) {
-              urlItem.score = tweetScore(tweet);
+    	    /* If the link already exists in the list, update the frequency and date. If the new
+    	     * link has a higher score, replace with the new url and update the score field.
+    	     */
+    	    if (link !== undefined) {
+            link.freq += 1; 
+            link.created_at = new Date(tweet.created_at);
+
+    	      if (link.score < tweetScore(tweet)) {
+              link.score = tweetScore(tweet);
+              link.url = url;
     	      }
+    	      
     	    } else {
-            // check if list is full
-            if (_.size(urlList) < urlListLength){
-              urlList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: moment(new Date(tweet.created_at)).format('MMM Do, HH:mm:ss').toString(), article: article});
+            /* if the list is not full yet, push the new link. Otherwise, pop the link with the lowest
+             * rank and push the new link with frequency +1
+             */
+            if (_.size(linkList) < linkListLength){
+              linkList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: new Date(tweet.created_at), article: article});
             } else {
-              // find and remove the item with the lowest count*score, and add the new one with increased count and new score
-              var min = _.min(urlList, function(link){return link.score*link.freq});
-              //console.log("To be removed: Freq:"+ min.freq + " " + min.url + " score:" + min.score);
-              min.url = url.href;
+              var min = _.min(linkList, function(link){return rank(link);});
+              min.url = url;
               min.freq += 1;
               min.score = tweetScore(tweet);
+              min.created_at =  new Date(tweet.created_at);
               min.article = article;
     	      }
     	    }
         }
-     });
+      }
+    });
 	}
   }
 };

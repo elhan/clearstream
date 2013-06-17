@@ -11,11 +11,17 @@ var express = require('express')
   , aux = require('./auxiliary.js')
   , keywords = require('./keywords.js');
 
+
 //Create an express app
 var app = express();
+//initialise lists
+var linkList = [];
+var linkListLength = 50;
+
 
 //Create the HTTP server with the express app as an argument
 var server = http.createServer(app);
+
 
 var t = new twitter({
     consumer_key: credentials.consumer_key,
@@ -23,6 +29,7 @@ var t = new twitter({
     access_token_key: credentials.access_token_key,
     access_token_secret: credentials.access_token_secret
 });
+
 
 //Generic Express setup
 app.set('port', process.env.PORT || 3000);
@@ -34,45 +41,29 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.locals.moment = require('moment');
+app.locals._ = require('underscore');
 
 
 //We're using bower components so add it to the path to make things easier
 app.use('/components', express.static(path.join(__dirname, 'components')));
 
 
-// development only
+//development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
 
-//Only one route. Render it with the current urlList
+//Render the index page with the current top10links list
 app.get('/', function(req, res) {
-  res.render('index', { data: urlList });
+  res.render('index', { data: linkList });
 });
 
-	
-//Start a Socket.IO listen
-var sockets = io.listen(server);
 
-/*
-//Set the sockets.io configuration.
-//THIS IS NECESSARY ONLY FOR HEROKU!
-sockets.configure(function() {
-  sockets.set('transports', ['xhr-polling']);
-  sockets.set('polling duration', 10);
+//Return the current list
+app.get('/top', function(req, res) {
+  res.send('links', { data: linkList });
 });
- */
- 
-//If the client just connected, give them fresh data!
-//sockets.sockets.on('connection', function(socket) { 
-//  socket.emit('data', urlList);
-//});
-
-
-//initialise list for space saving algorithm
-var urlList = [];
-var urlListLength = 10;
 
 
 /* Start a connection with twitter's Streaming API, and filter tweets that
@@ -82,8 +73,7 @@ var urlListLength = 10;
 t.stream('statuses/filter', { track: keywords.toTrack, language: 'el' }, function(stream) {
   //We have a connection. Now watch the 'data' event for incoming tweets.
   stream.on('data', function(tweet) {
-  	aux.spaceSaving(urlList, urlListLength, tweet);
-  	//sockets.sockets.emit('data', urlList);
+  	aux.spaceSaving(linkList, linkListLength, tweet);
   });
 });
       

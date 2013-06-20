@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 var express = require('express')
-  , io = require('socket.io')
   , http = require('http')
   , path = require('path')
   , twitter = require('ntwitter')

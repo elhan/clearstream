@@ -1,7 +1,6 @@
 $(function () {
   
   var links = [];
-  var topLinks = [];
   var indexUrl = 'http://localhost:3000';
   var topUrl = indexUrl.concat('/top');
   
@@ -10,13 +9,13 @@ $(function () {
    */
   
   var topLinks = function(data) {
-    var topLinks = [];
-    topLinks = _.sortBy(data, function(link){return link.score;});
-    topLinks = topLinks.reverse();
-    topLinks = _.first(topLinks, 20);
-    topLinks = _.sortBy(topLinks, function(link){return link.freq;});
-    topLinks = topLinks.reverse();
-    return topLinks;
+    var top = [];
+    top = _.sortBy(data, function(link){return link.score;});
+    top = top.reverse();
+    top = _.first(top, 20);
+    top = _.sortBy(top, function(link){return link.freq;});
+    top = top.reverse();
+    return top;
   };
   
   
@@ -42,13 +41,11 @@ $(function () {
    * Renders the top links list
    */
   
-  var renderList = function(links){
-    $('#links').fadeOut();
-    $('#links li').remove();
-    for(var i=0; i<links.length; i++){
-      $('#links').append(linkStr(link[i]));
-    }
-    $('#links').fadeIn();
+  var renderList = function(links) {
+    $('.link').fadeOut();
+    $.each(links, function(){
+      $('#links').append(linkStr(this));
+    });
   };
   
   
@@ -59,9 +56,9 @@ $(function () {
    */
 
   $('#refresh').on('click', function() {
-    $.get(topUrl, function(data) {
-      topLinks = topLinks(data);
-      renderList(topLinks);
+    $.get(topUrl, function(res) {
+      var links = topLinks(res.data);
+      renderList(links);
     });
   });
     

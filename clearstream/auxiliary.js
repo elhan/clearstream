@@ -74,6 +74,8 @@ function isSpam(link, spamWords) {
  */
  
 exports.spaceSaving =  function(linkList, linkListLength, tweet) {
+  var min = {};
+  
   //Make sure it was a valid tweet
   if (tweet.text !== undefined) {
   
@@ -82,6 +84,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
       request(tweet.entities.urls[0].expanded_url,  function (error, response, body) {
       
         if(response !== undefined) {
+          console.log(tweet.entities.urls[0].expanded_url);          
         	var url = response.request.uri;
         	var article = {};
     
@@ -96,15 +99,19 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
       
       	    //check if the article has already been linked
       	    var link = _.find(linkList, function(urlObject) {
+      	      if(urlObject.article.title == article.title){
+      	        //console.log(urlObject.article.title+"   "+urlObject.url.href+"      VS      "+article.html);
+      	      }
       	      return urlObject.article.title == article.title; 
       	    });
-      
+      	    
       	    /* If the link already exists in the list, update the frequency and date. If the new
       	     * link has a higher score, replace with the new url and update the score field.
       	     */
       	    if (link !== undefined) {
               link.freq += 1; 
               link.created_at = new Date(tweet.created_at);
+              console.log(link.article.title);
       
       	      if (link.score < tweetScore(tweet)) {
                 link.score = tweetScore(tweet);
@@ -119,8 +126,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
               if (_.size(linkList) < linkListLength){
                 linkList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: new Date(tweet.created_at), article: article});
               } else {
-                var min = _.min(linkList, function(link){return rank(link);});
-                min.url = null;
+                min = _.min(linkList, function(link){return rank(link);});
                 min.url = url;
                 min.freq = 1;
                 min.score = tweetScore(tweet);

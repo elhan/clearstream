@@ -7,7 +7,6 @@
     "type": "git",
     "url": "https://github.com/KPouianou/clearstream.git"
   },
-  "private": true,
   "scripts": {
     "start": "node app.js"
   },

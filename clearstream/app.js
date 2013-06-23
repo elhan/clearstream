@@ -57,7 +57,7 @@ app.get('/', function(req, res) {
 
 //Return the current list
 app.get('/top', function(req, res) {
-  res.send('index', { data: linkList });
+  res.send({ data: linkList });
 });
 
 

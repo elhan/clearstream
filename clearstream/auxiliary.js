@@ -81,7 +81,8 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
   
     //check if the tweet contains a url
     if(tweet.entities.urls.length>0) {
-      request(tweet.entities.urls[0].expanded_url,  function (error, response, body) {
+      request({uri: tweet.entities.urls[0].expanded_url, encoding:'utf8'},
+          function (error, response, body) {
       
         if(response !== undefined) {
           console.log(tweet.entities.urls[0].expanded_url);          

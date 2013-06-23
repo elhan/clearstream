@@ -43,10 +43,6 @@ app.locals.moment = require('moment');
 app.locals._ = require('underscore');
 
 
-//We're using bower components so add it to the path to make things easier
-app.use('/components', express.static(path.join(__dirname, 'components')));
-
-
 //development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -61,7 +57,7 @@ app.get('/', function(req, res) {
 
 //Return the current list
 app.get('/top', function(req, res) {
-  res.send('links', { data: linkList });
+  res.send('index', { data: linkList });
 });
 
 

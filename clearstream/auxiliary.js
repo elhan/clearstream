@@ -90,7 +90,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
     
       		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)) {
         	  body = body.replace(scripts, "");
-        	  parser.write(body);
+        	  parser.reset();
         	  article = readable.getArticle();
         	  //remove multiple white spaces
         	  article.html = article.html.replace(/\s+/g, ' ');

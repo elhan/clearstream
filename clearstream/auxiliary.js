@@ -84,8 +84,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
       request({uri: tweet.entities.urls[0].expanded_url, encoding:'utf8'},
           function (error, response, body) {
       
-        if(response !== undefined) {
-          console.log(tweet.entities.urls[0].expanded_url);          
+        if(response !== undefined) {         
         	var url = response.request.uri;
         	var article = {};
     
@@ -112,7 +111,6 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
       	    if (link !== undefined) {
               link.freq += 1; 
               link.created_at = new Date(tweet.created_at);
-              console.log(link.article.title);
       
       	      if (link.score < tweetScore(tweet)) {
                 link.score = tweetScore(tweet);

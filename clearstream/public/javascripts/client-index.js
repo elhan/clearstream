@@ -24,7 +24,7 @@ $(function () {
    */
   
   var linkStr = function(link) {
-    var str = '<li class="link">' +
+    var str = '<li class="link"">' +
       '<span id="link-title"><a href="' + 
       link.url.href +'" target="_blank">' + 
       link.article.title + '</a></span><span id="link-hostname">' +
@@ -42,10 +42,12 @@ $(function () {
    */
   
   var renderList = function(links) {
-    $('.link').fadeOut();
+    $('#list-wrapper').fadeOut();
+    $('ol').empty();
     $.each(links, function(){
       $('#links').append(linkStr(this));
     });
+    $('#list-wrapper').fadeIn();
   };
   
   

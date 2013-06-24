@@ -68,7 +68,15 @@ app.get('/top', function(req, res) {
 t.stream('statuses/filter', { track: keywords.toTrack, language: 'el' }, function(stream) {
   //We have a connection. Now watch the 'data' event for incoming tweets.
   stream.on('data', function(tweet) {
+    var date = new Date();
+    console.log(date);
   	aux.spaceSaving(linkList, linkListLength, tweet);
+  });
+  stream.on('end', function (response) {
+    console.log(response);
+  });
+  stream.on('destroy', function (response) {
+    console.log(response);
   });
 });
       

@@ -48,6 +48,7 @@ $(function () {
       $('#links').append(linkStr(this));
     });
     $('#list-wrapper').fadeIn();
+    $('body').scrollTop(0);
   };
   
   

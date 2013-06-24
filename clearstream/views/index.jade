@@ -3,6 +3,7 @@ html
     head
         title Clearstream
         meta(http-equiv="content-type", content="text/html; charset=UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css")
         link(rel='stylesheet', href='http://bootswatch.com/cosmo/bootstrap.min.css')
@@ -13,17 +14,23 @@ html
         script(src="/javascripts/client-index.js")
         
     body
-        section#clearstream-app
-          section#text-space
-            .header#header
-              h1 CLEARSTREAM
-              h3 filter out the noise
-            #description
-              nav.description-nav
-                h5.description-title
-                  span WHAT'S HOT RIGHT NOW?
-            section#main.container-fluid
-              button.btn.btn-inverse#refresh  <i class="icon-refresh"></i> refresh
+        #clearstream-app.container-fluid
+          .row-fluid
+            #cover.span3
+              #cover-img.span3
+                #cover-description
+                  #cover-description-inner
+                    p#title Clearstream
+                    span#subtitle filter out the noise
+                    p#subtitle-line
+                    #learn-more.btn.btn-link how clearstream works
+            #empty-space.span1
+            #text-space.span8
+              #header
+                #description
+                  h5.description-title
+                    span WHAT'S HOT RIGHT NOW?
+                button.btn.btn-inverse#refresh  <i class="icon-refresh"></i> refresh
               #list-wrapper
                 ol#links
                   //- sort list by score, get the top twenty, then display them ordered by mentions
@@ -43,5 +50,5 @@ html
                         span.separator |
                         span.link-footer-text mentions:
                         span.link-footer-value #{link.freq}
-            footer#footer
-              button.btn.btn-inverse#showmore show top 50 links  
+                footer#footer
+                  button.btn.btn-inverse#showmore show top 50 links  

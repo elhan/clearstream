@@ -11,7 +11,7 @@ html
         script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
-        script(src="/javascripts/client-index.js")
+        script(src="/javascripts/client-index.js")        
         
     body
         #clearstream-app.container-fluid
@@ -50,4 +50,8 @@ html
                         span.link-footer-text mentions:
                         span.link-footer-value #{link.freq}
                         span.separator |
-                        span#link-hostname  #{link.url.hostname} 
+                        span.kippt <a href="https://kippt.com/extensions/new/?url=#{link.url.href}&title=#{link.article.title}" target=_blank>Save to Kippt</a>
+                        span.separator |
+                        span#link-hostname  #{link.url.hostname}
+                        
+              #footer   

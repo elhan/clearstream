@@ -72,7 +72,6 @@ body {
 	margin-left: auto;
   margin-right:auto;
   padding-top: 162px;
-  padding-bottom: 80px;
 }
 
 #empty-space {
@@ -104,11 +103,11 @@ body {
 	color: rgb(179, 179, 177);
 }
 
-a {
+#link-title a {
 	color: rgb(51, 51, 50);
 }
 
-a:hover, a:focus {
+#link-title a:hover, #link-title a:focus {
 	color: rgb(179, 179, 177);
 }
 
@@ -144,6 +143,10 @@ a:hover, a:focus {
 	margin-right: 5px;
 }
 
+.kippt a {
+	color: rgb(179, 179, 177);
+}
+
 #refresh {
 	margin-left: 30px;
 	margin-bottom: 60px;
@@ -166,8 +169,12 @@ a:hover, a:focus {
 }
 
 #footer {
-	margin-top: 20px;
+  border-top: 1px solid rgb(179, 179, 177);
+	margin-top: 40px;
 	text-align: center;
+	max-width: 700px;
+	margin-left: 30px;
+	margin-bottom: 80px;
 }
 
 #showmore {

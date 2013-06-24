@@ -64,8 +64,13 @@ $(function () {
       moment(link.created_at).format('MMM Do, HH:mm:ss') + '</span><span class="separator">|</span>' + 
       '<span class="link-footer-text">mentions:</span><span class="link-footer-value">' +
       link.freq + '</span>' +
+      '<span class="separator">|</span>' +
+      '<span class="kippt"><a href="https://kippt.com/extensions/new/?url=' +
+      link.url.href + '&title=' + link.article.title + '" target="_blank">' +
+      'Save to Kippt</a></span>' +
       '</span><span class="separator">|</span><span id="link-hostname">' +
-      link.url.hostname + '</span></p></li>';
+      link.url.hostname + '</span>' +
+      '</p></li>';
     return str;
   };
   

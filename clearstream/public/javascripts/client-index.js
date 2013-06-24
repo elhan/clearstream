@@ -33,7 +33,7 @@ $(function () {
     top = _.sortBy(data, function(link){return link.score;});
     top = top.reverse();
     top = _.first(top, 20);
-    top = _.sortBy(top, function(link){return link.score;});
+    top = _.sortBy(top, function(link){return link.freq;});
     top = top.reverse();
     return top;
   };
@@ -45,7 +45,7 @@ $(function () {
   
   var sortLinks = function(data) {
     var all = [];
-    all = _.sortBy(data, function(link){return link.score;});
+    all = _.sortBy(data, function(link){return link.freq;});
     all = all.reverse();
     return all;
   };

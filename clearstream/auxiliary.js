@@ -18,12 +18,15 @@ var gravity = 1.4;
  * Returns the Score of a tweet based on the author's follower_count
  */
 
+//function tweetScore(tweet) {
+//  var score = 0.01;
+//  if(tweet.user.followers_count > 9){
+//	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
+//  }
+//  return score;
+//}
 function tweetScore(tweet) {
-  var score = 0.01;
-  if(tweet.user.followers_count > 9){
-	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
-  }
-  return score;
+  return Math.log(1+tweet.user.followers_count);
 }
 
 
@@ -48,8 +51,8 @@ function timeDecay(link) {
 function rank(link) {
   var decay = timeDecay(link);
   var score = link.score;
-  var freqFactor = Math.log(link.freq+1);
-  return freqFactor*(score/decay);
+  //var freqFactor = 1 + Math.log(Math.pow(link.freq, 2));
+  return link.freq*(score/decay);
 };
 
 

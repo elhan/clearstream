@@ -35,10 +35,10 @@ html
                 ol#links
                   //- sort list by score, get the top twenty, then display them ordered by mentions
                   links = [];
-                  links = _.sortBy(data, function(link){return link.score});
+                  links = _.sortBy(data, function(link){return link.freq});
                   links = links.reverse();
                   links = _.first(links, 20);
-                  links = _.sortBy(links, function(link){return link.score});
+                  links = _.sortBy(links, function(link){return link.freq});
                   links = links.reverse();
                   each link, index in links
                     li.link

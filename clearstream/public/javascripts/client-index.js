@@ -30,7 +30,7 @@ $(function () {
   
   var topLinks = function(data) {
     var top = [];
-    top = _.sortBy(data, function(link){return link.score;});
+    top = _.sortBy(data, function(link){return link.freq;});
     top = top.reverse();
     top = _.first(top, 20);
     top = _.sortBy(top, function(link){return link.freq;});

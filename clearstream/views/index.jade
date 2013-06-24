@@ -38,7 +38,7 @@ html
                   links = _.sortBy(data, function(link){return link.score});
                   links = links.reverse();
                   links = _.first(links, 20);
-                  links = _.sortBy(links, function(link){return link.freq});
+                  links = _.sortBy(links, function(link){return link.score});
                   links = links.reverse();
                   each link, index in links
                     li.link

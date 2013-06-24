@@ -11,7 +11,7 @@ var tags = /(<([^>]+)>)/ig;
 var scripts = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 
 // gravity determines the speed at which time decay sets in.
-var gravity = 1.5;
+var gravity = 1.4;
 
 
 /** 

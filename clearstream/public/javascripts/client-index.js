@@ -1,13 +1,23 @@
 $(function () {
   
   var links = [];
-  var indexUrl = 'http://localhost:3000';
-  var topUrl = indexUrl.concat('/top');
+  var indexUrl = document.URL;
+  var topUrl = indexUrl.concat('top');
+   
+  //on refresh, scroll to top
+  $(window).bind('unload', function(){ 
+    $('body').scrollTop(0);
+  });
+  
+  
+  /**
+   * Hanlde show more functionality
+   */
   
   $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() == $(document).height()) {
       $.get(topUrl, function(res) {
-        var links = res.data;
+        var links = sortLinks(res.data);
         renderAll(links);
       });
     }
@@ -23,9 +33,21 @@ $(function () {
     top = _.sortBy(data, function(link){return link.score;});
     top = top.reverse();
     top = _.first(top, 20);
-    top = _.sortBy(top, function(link){return link.freq;});
+    top = _.sortBy(top, function(link){return link.score;});
     top = top.reverse();
     return top;
+  };
+  
+  
+  /**
+   * Sorts the links by score
+   */
+  
+  var sortLinks = function(data) {
+    var all = [];
+    all = _.sortBy(data, function(link){return link.score;});
+    all = all.reverse();
+    return all;
   };
   
   
@@ -63,15 +85,12 @@ $(function () {
   
   
   /**
-   * Shows the entire list
+   * Renders the entire list
    */
   
   var renderAll = function(links) {
-    var all = [];
-    all = _.sortBy(links, function(link){return link.score;});
-    all = all.reverse();
     $('ol').empty();
-    $.each(all, function(){
+    $.each(links, function(){
       $('#links').append(linkStr(this));
     });
   };

@@ -101,7 +101,12 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	  article.html = article.html.replace(/\s+/g, ' ');
         	  //remove html tags
         	  article.html = article.html.replace(tags, "");*/
-      
+        	  
+        	  // check for empty title
+              if (!article.title){
+                  return;
+              }
+        	  
       	    //check if the article has already been linked
       	    var link = _.find(linkList, function(urlObject) {
       	      return urlObject.article.title == article.title; 

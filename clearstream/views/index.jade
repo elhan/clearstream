@@ -43,12 +43,11 @@ html
                   each link, index in links
                     li.link
                       span#link-title <a href = #{link.url.href} target=_blank>#{link.article.title}</a>
-                      span#link-hostname  #{link.url.hostname}
                       p#link-info
                         span.link-footer-text last mentioned on
                         span.link-footer-value #{moment(link.created_at).format('MMM Do, HH:mm:ss')}
                         span.separator |
                         span.link-footer-text mentions:
                         span.link-footer-value #{link.freq}
-                footer#footer
-                  button.btn.btn-inverse#showmore show top 50 links  
+                        span.separator |
+                        span#link-hostname  #{link.url.hostname} 

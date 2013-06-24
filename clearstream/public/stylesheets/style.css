@@ -1,5 +1,5 @@
 .btn.btn-inverse {
-	background-color: (51, 51, 50);
+	background-color: rgb(51, 51, 50);
 }
 
 body {
@@ -120,7 +120,6 @@ a:hover, a:focus {
 }
 
 #link-hostname {
-	margin-left: 10px;
 	color: rgb(179, 179, 177);
 	font-size: 12px;
 }

@@ -1,7 +1,10 @@
+.btn.btn-inverse {
+	background-color: rgb(51, 51, 50);
+}
+
 body {
-	 padding-top: 40px;
-	 padding-bottom: 40px;
-	 background-color: #363d40;
+	min-width: 1000px !important;
+	background-color: #eee;
 }
 
 .btn-inverse:hover {
@@ -9,31 +12,88 @@ body {
 }
 
 #clearstream-app {
+	padding: 0px;
 	background-color: white;
-	margin-left: auto;
-	margin-right:auto;
-	width: 62%;
 	color: rgb(51, 51, 50);
+}
+
+#cover {
+	min-width: 234px;
+}
+
+#cover-img {
+	border-right: 1px solid #636363;
+	min-width: 234px !important;
+	background-image: url('../pics/acropolis.jpg');
+	background-size: cover;
+	position: fixed;
+	height: 100%;
+	min-width: 190px;
+}
+
+#cover-description {
+	width: 100%;
+	position: absolute;
+	top: 62%;
+}
+
+#cover-description-inner {
+	display: block;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#title {
+	line-height: 40px;
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+}
+
+#subtitle {
+	font-size: 20px;
+	color: white;
+}
+
+#subtitle-line {
+	margin-top: 18px;
+	border-bottom-color: rgba(255, 255, 255, 0.298039);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+#learn-more {
+	color: white;
+	padding-left: 0px;
 }
 
 #text-space {
 	margin-left: auto;
   margin-right:auto;
-  max-width: 700px;
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 162px;
+}
+
+#empty-space {
+	margin: 0px;
 }
 
 #header {
-	  text-align: center;
-	  margin-bottom: 80px;
+	width: 100%;
+	max-width: 730px;
+	top: 0px;
+	padding-top: 40px;
+	background-color: white;
+	position: fixed;
+	z-index: 2;
 }
 
-#description-nav {
-	color: rgb(179, 179, 177);
+#description {
+	margin-left: 30px;
 }
 
 .description-title {
+	margin-bottom: 20px;
 	border-top: 1px solid rgb(179, 179, 177);
 	border-bottom: 1px solid rgb(179, 179, 177);
 }
@@ -43,11 +103,11 @@ body {
 	color: rgb(179, 179, 177);
 }
 
-a {
+#link-title a {
 	color: rgb(51, 51, 50);
 }
 
-a:hover, a:focus {
+#link-title a:hover, #link-title a:focus {
 	color: rgb(179, 179, 177);
 }
 
@@ -59,7 +119,6 @@ a:hover, a:focus {
 }
 
 #link-hostname {
-	margin-left: 10px;
 	color: rgb(179, 179, 177);
 	font-size: 12px;
 }
@@ -84,24 +143,24 @@ a:hover, a:focus {
 	margin-right: 5px;
 }
 
-#main {
-	padding-left: 0px;
-	padding-right: 0px;
-	margin-top: 20px;
+.kippt a {
+	color: rgb(179, 179, 177);
+}
+
+#refresh {
+	margin-left: 30px;
+	margin-bottom: 60px;
 }
 
 #refresh i {
 	font-size: 16px;
 }
 
-h3 {
-	margin-top: 20px;
-	color: rgb(179, 179, 177);
-}
-
 #list-wrapper {
+	max-width: 700px;
 	position: relative;
 	margin-top: 38px;
+	padding-left: 30px;
 }
 
 #links {
@@ -110,8 +169,12 @@ h3 {
 }
 
 #footer {
-	margin-top: 20px;
+  border-top: 1px solid rgb(179, 179, 177);
+	margin-top: 40px;
 	text-align: center;
+	max-width: 700px;
+	margin-left: 30px;
+	margin-bottom: 80px;
 }
 
 #showmore {

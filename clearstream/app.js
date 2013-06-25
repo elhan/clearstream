@@ -70,6 +70,12 @@ t.stream('statuses/filter', { track: keywords.toTrack, language: 'el' }, functio
   stream.on('data', function(tweet) {
   	aux.spaceSaving(linkList, linkListLength, tweet);
   });
+  stream.on('end', function (response) {
+    console.log(response);
+  });
+  stream.on('destroy', function (response) {
+    console.log(response);
+  });
 });
       
 

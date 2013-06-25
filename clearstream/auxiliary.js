@@ -18,12 +18,15 @@ var gravity = 1.5;
  * Returns the Score of a tweet based on the author's follower_count
  */
 
+//function tweetScore(tweet) {
+//  var score = 0.01;
+//  if(tweet.user.followers_count > 9){
+//	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
+//  }
+//  return score;
+//}
 function tweetScore(tweet) {
-  var score = 0.01;
-  if(tweet.user.followers_count > 9){
-	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
-  }
-  return score;
+  return Math.log(1+tweet.user.followers_count);
 }
 
 
@@ -48,8 +51,8 @@ function timeDecay(link) {
 function rank(link) {
   var decay = timeDecay(link);
   var score = link.score;
-  var freqFactor = Math.log(link.freq+1);
-  return freqFactor*(score/decay);
+  //var freqFactor = 1 + Math.log(Math.pow(link.freq, 2));
+  return link.freq*(score/decay);
 };
 
 
@@ -81,7 +84,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
   
     //check if the tweet contains a url
     if(tweet.entities.urls.length>0) {
-      request({uri: tweet.entities.urls[0].expanded_url, encoding:'utf8'},
+      request({uri: tweet.entities.urls[0].expanded_url, encoding:'utf-8'},
           function (error, response, body) {
       
         if(response !== undefined) {         
@@ -94,16 +97,19 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	  parser.reset();
         	  parser.write(body);
         	  article = readable.getArticle();
-        	  //remove multiple white spaces
+        	  
+        	  /*//remove multiple white spaces
         	  article.html = article.html.replace(/\s+/g, ' ');
         	  //remove html tags
-        	  article.html = article.html.replace(tags, "");
-      
+        	  article.html = article.html.replace(tags, "");*/
+        	  
+        	  // check for empty title
+              if (!article.title){
+                  return;
+              }
+        	  
       	    //check if the article has already been linked
       	    var link = _.find(linkList, function(urlObject) {
-      	      if(urlObject.article.title == article.title){
-      	        //console.log(urlObject.article.title+"   "+urlObject.url.href+"      VS      "+article.html);
-      	      }
       	      return urlObject.article.title == article.title; 
       	    });
       	    

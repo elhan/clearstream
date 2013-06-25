@@ -3,6 +3,7 @@ html
     head
         title Clearstream
         meta(http-equiv="content-type", content="text/html; charset=UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css")
         link(rel='stylesheet', href='http://bootswatch.com/cosmo/bootstrap.min.css')
@@ -10,38 +11,47 @@ html
         script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
-        script(src="/javascripts/client-index.js")
+        script(src="/javascripts/client-index.js")        
         
     body
-        section#clearstream-app
-          section#text-space
-            .header#header
-              h1 CLEARSTREAM
-              h3 filter out the noise
-            #description
-              nav.description-nav
-                h5.description-title
-                  span WHAT'S HOT RIGHT NOW?
-            section#main.container-fluid
-              button.btn.btn-inverse#refresh  <i class="icon-refresh"></i> refresh
+        #clearstream-app.container-fluid
+          .row-fluid
+            #cover.span3
+              #cover-img.span3
+                #cover-description
+                  #cover-description-inner
+                    p#title Clearstream
+                    span#subtitle filter out the noise
+                    p#subtitle-line
+                    #learn-more.btn.btn-link how clearstream works
+            #empty-space.span1
+            #text-space.span8
+              #header
+                #description
+                  h5.description-title
+                    span WHAT'S HOT RIGHT NOW?
+                button.btn.btn-inverse#refresh  <i class="icon-refresh"></i> refresh
               #list-wrapper
                 ol#links
                   //- sort list by score, get the top twenty, then display them ordered by mentions
                   links = [];
-                  links = _.sortBy(data, function(link){return link.score});
+                  links = _.sortBy(data, function(link){return link.freq});
                   links = links.reverse();
                   links = _.first(links, 20);
                   links = _.sortBy(links, function(link){return link.freq});
                   links = links.reverse();
                   each link, index in links
                     li.link
-                      span#link-title <a href = #{link.url.href} target=_blank>#{link.article.title}</a>
-                      span#link-hostname  #{link.url.hostname}
+                      span#link-title <a href = !{link.url.href} target=_blank>!{link.article.title}</a>
                       p#link-info
                         span.link-footer-text last mentioned on
-                        span.link-footer-value #{moment(link.created_at).format('MMM Do, HH:mm:ss')}
+                        span.link-footer-value !{moment(link.created_at).format('MMM Do, HH:mm:ss')}
                         span.separator |
                         span.link-footer-text mentions:
-                        span.link-footer-value #{link.freq}
-            footer#footer
-              button.btn.btn-inverse#showmore show top 50 links  
+                        span.link-footer-value !{link.freq}
+                        span.separator |
+                        span.kippt <a href="https://kippt.com/extensions/new/?url=!{link.url.href}&title=!{link.article.title}" target=_blank>Save to Kippt</a>
+                        span.separator |
+                        span#link-hostname  !{link.url.hostname}
+                        
+              #footer   

@@ -51,7 +51,7 @@ function timeDecay(link) {
 function rank(link) {
   var decay = timeDecay(link);
   var score = link.score;
-  var freqFactor = 1 + Math.log(Math.pow(link.freq, 2));
+  var freqFactor = Math.pow((1+Math.log(link.freq)), 2);
   return freqFactor*(score/decay);
 };
 

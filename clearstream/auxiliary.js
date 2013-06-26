@@ -11,23 +11,24 @@ var tags = /(<([^>]+)>)/ig;
 var scripts = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 
 // gravity determines the speed at which time decay sets in.
-var gravity = 1.5;
+var gravity = 1.6;
 
 
 /** 
  * Returns the Score of a tweet based on the author's follower_count
  */
 
-//function tweetScore(tweet) {
-//  var score = 0.01;
-//  if(tweet.user.followers_count > 9){
-//	score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
-//  }
-//  return score;
-//}
 function tweetScore(tweet) {
-  return Math.log(1+tweet.user.followers_count);
+  var score = 1;
+  if(tweet.user.followers_count > 100){
+	//score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
+    score = Math.log(Math.pow(tweet.user.followers_count, 1.5)) - 2;
+  }
+  return score;
 }
+//function tweetScore(tweet) {
+//  return Math.log(1+tweet.user.followers_count);
+//}
 
 
 /** 
@@ -51,8 +52,8 @@ function timeDecay(link) {
 function rank(link) {
   var decay = timeDecay(link);
   var score = link.score;
-  //var freqFactor = 1 + Math.log(Math.pow(link.freq, 2));
-  return link.freq*(score/decay);
+  var freqFactor = Math.pow((1+Math.log(link.freq)), 2);
+  return freqFactor*(score/decay);
 };
 
 

@@ -4,6 +4,7 @@ var _ = require('underscore')
   , readable = new Readability({})
   , parser = new Parser(readable, {})
   , request = require('request')
+//  , iconv = require('iconv-lite')
   , keywords = require('./keywords.js');
 
 //expressions to clean the article fetched

@@ -9,6 +9,21 @@ $(function () {
     $('body').scrollTop(0);
   });
   
+  //start polling for new links
+  fetchNew();
+  
+  
+  /**
+   * Handle polling functionality to display "new" links
+   */
+   function fetchNew() {
+     $.get(topUrl, function(res) {
+       var links = topLinks(res.data);
+       newLinks(links);
+       setTimeout(fetchNew, 5000);
+     });
+   }
+  
   
   /**
    * Hanlde show more functionality

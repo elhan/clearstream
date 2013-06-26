@@ -1,6 +1,5 @@
 $(function () {
   
-  var links = [];
   var indexUrl = document.URL;
   var topUrl = indexUrl.concat('top');
    
@@ -14,19 +13,43 @@ $(function () {
   
   
   /**
-   * Handle polling functionality to display "new" links
+   * Handles polling functionality to fetch "new" links
    */
    function fetchNew() {
      $.get(topUrl, function(res) {
        var links = topLinks(res.data);
-       newLinks(links);
+       $('#sum').text(newLinks(links));
        setTimeout(fetchNew, 5000);
      });
    }
   
+   
+   /**
+    * Calculates the difference between two lists, and handle 
+    * the rendering of the'new links' counter.
+    */
+   function newLinks(links) {
+     var oldLinks = [];
+     var newLinks = [];
+     
+     //get all the titles in the old links and push them into oldLinks
+     $( ".link-title" ).each(function( index ) {
+       oldLinks.push($(this).text());
+     });
+     
+     //get all titles in the new links and push them in newLinks
+     _.each(links, function(link){
+       newLinks.push(link.article.title);
+     });
+     console.log('new:  ' + newLinks);
+     console.log('old:  ' + oldLinks);
+     console.log('difference:  ' + _.difference(newLinks, oldLinks));
+     return _.difference(newLinks, oldLinks).length;
+   }
+   
   
   /**
-   * Hanlde show more functionality
+   * Handle showmore functionality
    */
   
   $(window).scroll(function() {
@@ -72,10 +95,10 @@ $(function () {
   
   var linkStr = function(link) {
     var str = '<li class="link"">' +
-      '<span id="link-title"><a href="' + 
+      '<span class="link-title"><a href="' + 
       link.url.href +'" target="_blank">' + 
       link.article.title + '</a></span>' +
-      '<p id="link-info"><span class="link-footer-text">last mentioned on</span><span class="link-footer-value">' + 
+      '<p class="link-info"><span class="link-footer-text">last mentioned on</span><span class="link-footer-value">' + 
       moment(link.created_at).format('MMM Do, HH:mm:ss') + '</span><span class="separator">|</span>' + 
       '<span class="link-footer-text">mentions:</span><span class="link-footer-value">' +
       link.freq + '</span>' +
@@ -83,7 +106,7 @@ $(function () {
       '<span class="kippt"><a href="https://kippt.com/extensions/new/?url=' +
       link.url.href + '&title=' + link.article.title + '" target="_blank">' +
       'Save to Kippt</a></span>' +
-      '</span><span class="separator">|</span><span id="link-hostname">' +
+      '</span><span class="separator">|</span><span class="link-hostname">' +
       link.url.hostname + '</span>' +
       '</p></li>';
     return str;
@@ -122,7 +145,7 @@ $(function () {
    * link list and fill it with the new data.
    */
 
-  $('#refresh').on('click', function() {
+  $('#newLinks').on('click', function() {
     $.get(topUrl, function(res) {
       var links = topLinks(res.data);
       renderTop(links);

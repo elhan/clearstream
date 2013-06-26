@@ -103,27 +103,27 @@ body {
 	color: rgb(179, 179, 177);
 }
 
-#link-title a {
+.link-title a {
 	color: rgb(51, 51, 50);
 }
 
-#link-title a:hover, #link-title a:focus {
+.link-title a:hover, #link-title a:focus {
 	color: rgb(179, 179, 177);
 }
 
-#link-title {
+.link-title {
 	font-size: 20px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	margin-bottom: 0px;
 }
 
-#link-hostname {
+.link-hostname {
 	color: rgb(179, 179, 177);
 	font-size: 12px;
 }
 
-#link-info {
+.link-info {
 	color: rgb(179, 179, 177);
 	font-size: 10px;
 	margin-bottom: 20px;
@@ -148,13 +148,17 @@ body {
 }
 
 #newLinks {
+	line-height: 40px;
+	font-size: 14px;
 	height: 40px;
 	background-color: #eee;
 	color: rgb(51, 51, 50);
-	text-align: middle;
+	text-align: center;
+	vertical-align: text-middle;
 	margin-left: 30px;
 	margin-bottom: 50px;
 }
+
 
 #refresh i {
 	font-size: 16px;

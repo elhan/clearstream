@@ -31,7 +31,7 @@ html
                   h5.description-title
                     span WHAT'S HOT RIGHT NOW?
                 #newLinks
-                  span#sum
+                  span#sum 10 
                   span#new new links
               #list-wrapper
                 ol#links
@@ -44,8 +44,8 @@ html
                   links = links.reverse();
                   each link, index in links
                     li.link
-                      span#link-title <a href = !{link.url.href} target=_blank>!{link.article.title}</a>
-                      p#link-info
+                      span.link-title <a href = !{link.url.href} target=_blank>!{link.article.title}</a>
+                      p.link-info
                         span.link-footer-text last mentioned on
                         span.link-footer-value !{moment(link.created_at).format('MMM Do, HH:mm:ss')}
                         span.separator |
@@ -54,6 +54,6 @@ html
                         span.separator |
                         span.kippt <a href="https://kippt.com/extensions/new/?url=!{link.url.href}&title=!{link.article.title}" target=_blank>Save to Kippt</a>
                         span.separator |
-                        span#link-hostname  !{link.url.hostname}
+                        span.link-hostname  !{link.url.hostname}
                         
               #footer   

@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 var express = require('express')
+//  , io = require('socket.io')
   , http = require('http')
   , path = require('path')
   , twitter = require('ntwitter')
@@ -51,7 +52,7 @@ if ('development' == app.get('env')) {
 
 //Render the index page with the current top10links list
 app.get('/', function(req, res) {
-  res.render('index', { data: linkList });
+  res.render('index');
 });
 
 

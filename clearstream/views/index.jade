@@ -35,25 +35,4 @@ html
                   span#new new links
               #list-wrapper
                 ol#links
-                  //- sort list by score, get the top twenty, then display them ordered by mentions
-                  links = [];
-                  links = _.sortBy(data, function(link){return link.freq});
-                  links = links.reverse();
-                  links = _.first(links, 20);
-                  links = _.sortBy(links, function(link){return link.freq});
-                  links = links.reverse();
-                  each link, index in links
-                    li.link
-                      span.link-title <a href = !{link.url.href} target=_blank>!{link.article.title}</a>
-                      p.link-info
-                        span.link-footer-text last mentioned on
-                        span.link-footer-value !{moment(link.created_at).format('MMM Do, HH:mm:ss')}
-                        span.separator |
-                        span.link-footer-text mentions:
-                        span.link-footer-value !{link.freq}
-                        span.separator |
-                        span.kippt <a href="https://kippt.com/extensions/new/?url=!{link.url.href}&title=!{link.article.title}" target=_blank>Save to Kippt</a>
-                        span.separator |
-                        span.link-hostname  !{link.url.hostname}
-                        
               #footer   

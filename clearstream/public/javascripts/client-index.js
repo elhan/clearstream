@@ -8,21 +8,6 @@ $(function () {
     $('body').scrollTop(0);
   });
   
-  //start polling for new links
-  fetchNew();
-  
-  
-  /**
-   * Handles polling functionality to fetch "new" links
-   */
-   function fetchNew() {
-     $.get(topUrl, function(res) {
-       var links = topLinks(res.data);
-       $('#sum').text(newLinks(links));
-       setTimeout(fetchNew, 5000);
-     });
-   }
-  
    
    /**
     * Calculates the difference between two lists, and handle 
@@ -46,35 +31,6 @@ $(function () {
      console.log('difference:  ' + _.difference(newLinks, oldLinks));
      return _.difference(newLinks, oldLinks).length;
    }
-   
-  
-  /**
-   * Handle showmore functionality
-   */
-  
-  $(window).scroll(function() {
-    if($(window).scrollTop() + $(window).height() == $(document).height()) {
-      $.get(topUrl, function(res) {
-        var links = sortLinks(res.data);
-        renderAll(links);
-      });
-    }
-  });
-  
-  
-  /**
-   * Sorts and reduces the initial list to only the top N elements
-   */
-  
-  var topLinks = function(data) {
-    var top = [];
-    top = _.sortBy(data, function(link){return link.freq;});
-    top = top.reverse();
-    top = _.first(top, 20);
-    top = _.sortBy(top, function(link){return link.freq;});
-    top = top.reverse();
-    return top;
-  };
   
   
   /**
@@ -114,27 +70,19 @@ $(function () {
   
   
   /**
-   * Renders the top links list
+   * Request the current list, clears old entries
+   * and renders the new list.
    */
   
-  var renderTop = function(links) {
-    $('#list-wrapper').fadeOut();
-    $('ol').empty();
-    $.each(links, function(){
-      $('#links').append(linkStr(this));
-    });
-    $('#list-wrapper').fadeIn();
-  };
-  
-  
-  /**
-   * Renders the entire list
-   */
-  
-  var renderAll = function(links) {
-    $('ol').empty();
-    $.each(links, function(){
-      $('#links').append(linkStr(this));
+  var render = function(links) {
+    $.get(topUrl, function(res) {
+      var links = sortLinks(res.data);
+      $('ol').empty();
+      $.each(links, function(){
+        $('#links').append(linkStr(this));
+      });
+      //smooth the effect and make all changes appear at once
+      //setTimeout(function(){$('body').scrollTop(0);}, 300);
     });
   };
   
@@ -146,12 +94,9 @@ $(function () {
    */
 
   $('#newLinks').on('click', function() {
-    $.get(topUrl, function(res) {
-      var links = topLinks(res.data);
-      renderTop(links);
-      //smooth the effect and make all changes appear at once
-      setTimeout(function(){$('body').scrollTop(0);}, 300);
-    });
+    render();
   });
+  
+  render();
     
 });

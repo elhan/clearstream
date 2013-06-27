@@ -5,7 +5,8 @@ var _ = require('underscore')
   , parser = new Parser(readable, {})
   , request = require('request')
 //  , iconv = require('iconv-lite')
-  , keywords = require('./keywords.js');
+  , keywords = require('./keywords.js')
+  , txtSim = require('./textSimilarity.js');
 
 //expressions to clean the article fetched
 var tags = /(<([^>]+)>)/ig;
@@ -27,7 +28,6 @@ function tweetScore(tweet) {
   }
   return score;
 }
-
 
 /** 
  * Returns the time decay factor for a link. Similar to HN algorithm.
@@ -91,8 +91,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	var article = {};
     
       		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)) {
-      		  parser.reset();
-        	  body = body.replace(scripts, "");
+      		  body = body.replace(scripts, "");
         	  parser.reset();
         	  parser.write(body);
         	  article = readable.getArticle();
@@ -109,6 +108,10 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	  
       	    //check if the article has already been linked
       	    var link = _.find(linkList, function(urlObject) {
+      	    	var similarity = txtSim.calculateSimilarity(urlObject.article.title, article.title);
+      	        if (similarity > 0.5){
+      	        	console.log("Similarity:" + similarity + " for " + urlObject.article.title + " and " + article.title);
+      	        }
       	      return urlObject.article.title == article.title; 
       	    });
       	    

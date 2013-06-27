@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 var express = require('express')
-//  , io = require('socket.io')
+  , io = require('socket.io')
   , http = require('http')
   , path = require('path')
   , twitter = require('ntwitter')
@@ -50,7 +50,7 @@ if ('development' == app.get('env')) {
 }
 
 
-//Render the index page with the current top10links list
+//Render the index page
 app.get('/', function(req, res) {
   res.render('index');
 });
@@ -60,6 +60,37 @@ app.get('/', function(req, res) {
 app.get('/top', function(req, res) {
   res.send({ data: linkList });
 });
+
+
+//Start a Socket.IO listen
+var sockets = io.listen(server);
+
+
+//socket.io configuration for Heroku
+sockets.configure(function() {
+  sockets.set('transports', ['xhr-polling']);
+  sockets.set('polling duration', 10);
+});
+ 
+ 
+//send the current list to the client
+function sendList() {
+  sockets.sockets.emit('data', linkList);
+}
+
+
+/* If the client just connected, give them fresh data.
+ * The 'initialize' event is used to inform the client 
+ * this is the first time data is send, and the list needs to 
+ * be initialized
+ */
+sockets.sockets.on('connection', function() {
+  sockets.sockets.emit('initialize', linkList);
+});
+
+
+// Every 5 seconds emit new list 
+setInterval(sendList, 3000);
 
 
 /* Start a connection with twitter's Streaming API, and filter tweets that

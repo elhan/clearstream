@@ -2,35 +2,58 @@ $(function () {
   
   var indexUrl = document.URL;
   var topUrl = indexUrl.concat('top');
-   
+  var newLinks = [];
+  var oldLinks = [];
+  
+  //connect sockets
+  var socket = io.connect(window.location.hostname);
+  
   //on refresh, scroll to top
   $(window).bind('unload', function(){ 
     $('body').scrollTop(0);
   });
   
+  
+  /**
+   * Update newLinks every time the socket emits data, and
+   * calculate the sum of differences between the new list
+   * and the list currently displayed by the client.
+   */
    
-   /**
-    * Calculates the difference between two lists, and handle 
-    * the rendering of the'new links' counter.
-    */
-   function newLinks(links) {
-     var oldLinks = [];
-     var newLinks = [];
-     
-     //get all the titles in the old links and push them into oldLinks
-     $( ".link-title" ).each(function( index ) {
-       oldLinks.push($(this).text());
-     });
-     
-     //get all titles in the new links and push them in newLinks
-     _.each(links, function(link){
-       newLinks.push(link.article.title);
-     });
-     console.log('new:  ' + newLinks);
-     console.log('old:  ' + oldLinks);
-     console.log('difference:  ' + _.difference(newLinks, oldLinks));
-     return _.difference(newLinks, oldLinks).length;
-   }
+  socket.on('data', function(data) {
+    newLinks = data;
+    var dif = listDifference();
+    //if clause is needed because there will always be 1 new item, since
+    //the list is constantly updated
+    if(dif > 1){
+      $('#sum').text(dif+" new links");
+      $('#newLinks').slideDown();
+      setTimeout(function(){$('#text-space').css('padding-top', '170px');}, 200);
+    }
+  });
+  
+  
+  /**
+   * Render the list when the data is first emited.
+   */
+   
+  socket.on('initialize', function(data) {
+    newLinks = data;
+    oldLinks = data;
+    $.each(data, function(){
+      $('#links').append(linkStr(this));
+    });
+  });
+  
+  
+  /**
+   * Return the number of links that exist in the newList,
+   * but not in the old list.
+   */
+   
+  var listDifference = function() {
+    return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), _.pluck(_.pluck(oldLinks, "article"), "title")).length;
+  }
   
   
   /**
@@ -74,16 +97,25 @@ $(function () {
    * and renders the new list.
    */
   
-  var render = function(links) {
-    $.get(topUrl, function(res) {
-      var links = sortLinks(res.data);
-      $('ol').empty();
-      $.each(links, function(){
-        $('#links').append(linkStr(this));
-      });
-      //smooth the effect and make all changes appear at once
-      //setTimeout(function(){$('body').scrollTop(0);}, 300);
+  var render = function() {
+    //update link lists
+    oldLinks.length = 0;
+    _.each(newLinks, function(link){
+      oldLinks.push(link);
     });
+    
+    //render the new list
+    $('ol').empty();
+    $.each(oldLinks, function(){
+      $('#links').append(linkStr(this));
+    });
+    
+    //hide new links counter
+    $('#sum').text('');
+    $('#newLinks').slideUp();
+    setTimeout(function(){$('#text-space').css('padding-top', '140px');}, 200);
+    
+    setTimeout(function(){$('body').scrollTop(0);}, 200);
   };
   
   
@@ -97,6 +129,4 @@ $(function () {
     render();
   });
   
-  render();
-    
 });

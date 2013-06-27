@@ -71,7 +71,7 @@ body {
 #text-space {
 	margin-left: auto;
   margin-right:auto;
-  padding-top: 128px;
+  padding-top: 102px;
 }
 
 #empty-space {
@@ -154,14 +154,26 @@ body {
 	line-height: 40px;
 	font-size: 14px;
 	height: 40px;
-	background-color: #eee;
-	color: #4387bf;
+	color: white;
+	background-color: rgb(47, 163, 230);
+  background-image: linear-gradient(rgb(61, 170, 233), rgb(26, 153, 226));
 	text-align: center;
 	vertical-align: text-middle;
-	margin-left: 30px;
-	margin-bottom: 20px;
+	/*---*/
+	-webkit-background-clip: border-box;
+	-webkit-background-origin: padding-box;
+	-webkit-background-size: auto;
+	-webkit-box-shadow: rgb(208, 208, 208) 1px 1px 2px 0px;
+	border-image-outset: 0px;
+	border-image-repeat: stretch;
+	border-image-slice: 100%;
+	border-image-source: none;
+	border-image-width: 1;
+	border-color: rgba(0, 0, 0, 0.0980392);
+  border-style: solid;
+  border-width: 1px;
+	box-shadow: rgb(208, 208, 208) 1px 1px 2px 0px;
 }
-
 
 #refresh i {
 	font-size: 16px;
@@ -174,6 +186,7 @@ body {
 }
 
 #links {
+	padding-top: 20px;
 	margin-left: 0px;
 	margin-bottom: 0px;
 }

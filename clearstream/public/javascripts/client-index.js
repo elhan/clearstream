@@ -28,7 +28,8 @@ $(function () {
     if(dif > 1){
       $('#sum').text(dif+" new links");
       $('#newLinks').slideDown();
-      setTimeout(function(){$('#text-space').css('padding-top', '170px');}, 200);
+      $('#newLinks').css({'position' : 'fixed', 'width' : '100%', 'max-width' : '700px'});
+      $('#links').first().css('padding-top','60px');
     }
   });
   
@@ -39,8 +40,8 @@ $(function () {
    
   socket.on('initialize', function(data) {
     newLinks = data;
-    oldLinks = data;
-    $.each(data, function(){
+    oldLinks = sortLinks(data);
+    $.each(oldLinks, function(){
       $('#links').append(linkStr(this));
     });
   });
@@ -53,18 +54,18 @@ $(function () {
    
   var listDifference = function() {
     return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), _.pluck(_.pluck(oldLinks, "article"), "title")).length;
-  }
+  };
   
   
   /**
-   * Sorts the links by score
+   * Sorts the links by frequency
    */
   
-  var sortLinks = function(data) {
-    var all = [];
-    all = _.sortBy(data, function(link){return link.freq;});
-    all = all.reverse();
-    return all;
+  var sortLinks = function(unsorted) {
+    var sorted = [];
+    sorted = _.sortBy(unsorted, function(link){return link.freq;});
+    sorted = sorted.reverse();
+    return sorted;
   };
   
   
@@ -73,7 +74,7 @@ $(function () {
    */
   
   var linkStr = function(link) {
-    var str = '<li class="link"">' +
+    var str = '<li class="link">' +
       '<span class="link-title"><a href="' + 
       link.url.href +'" target="_blank">' + 
       link.article.title + '</a></span>' +
@@ -104,6 +105,8 @@ $(function () {
       oldLinks.push(link);
     });
     
+    oldLinks = sortLinks(oldLinks);
+    
     //render the new list
     $('ol').empty();
     $.each(oldLinks, function(){
@@ -112,8 +115,9 @@ $(function () {
     
     //hide new links counter
     $('#sum').text('');
+    $('#newLinks').css({'position' : 'relative'});
     $('#newLinks').slideUp();
-    setTimeout(function(){$('#text-space').css('padding-top', '140px');}, 200);
+    $('#links').css('padding-top','20px');
     
     setTimeout(function(){$('body').scrollTop(0);}, 200);
   };
@@ -127,6 +131,13 @@ $(function () {
 
   $('#newLinks').on('click', function() {
     render();
+  });
+  
+  //on hover, change new links background colour
+  $('#newLinks').on('mouseover', function(){
+    $(this).css({'background-color':'rgb(95, 174, 227)', 'background-image':'none'});
+  }).on('mouseout', function(){
+    $(this).css({'background-color':'rgb(47, 163, 230)', 'background-image':'linear-gradient(rgb(61, 170, 233), rgb(26, 153, 226))'});
   });
   
 });

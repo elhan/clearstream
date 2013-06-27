@@ -27,9 +27,6 @@ function tweetScore(tweet) {
   }
   return score;
 }
-//function tweetScore(tweet) {
-//  return Math.log(1+tweet.user.followers_count);
-//}
 
 
 /** 

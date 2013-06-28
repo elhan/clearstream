@@ -63,7 +63,7 @@ app.get('/top', function(req, res) {
 
 
 //Start a Socket.IO listen
-var sockets = io.listen(server);
+var sockets = io.listen(server, { log: false });
 
 
 //socket.io configuration for Heroku

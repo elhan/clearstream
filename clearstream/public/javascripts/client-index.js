@@ -28,8 +28,9 @@ $(function () {
     if(dif > 1){
       $('#sum').text(dif+" new links");
       $('#newLinks').slideDown();
-      $('#newLinks').css({'position' : 'fixed', 'width' : '100%', 'max-width' : '700px'});
-      $('#links').first().css('padding-top','60px');
+      $('#newLinks').css({'position' : 'fixed', 'width' : '100%', 'max-width' : '698px'});
+      $('#links').css('padding-top','60px');
+      $('#description').css('margin-bottom', '80px');
     }
   });
   
@@ -118,6 +119,7 @@ $(function () {
     $('#newLinks').css({'position' : 'relative'});
     $('#newLinks').slideUp();
     $('#links').css('padding-top','20px');
+    $('#description').css('margin-bottom', '0px');
     
     setTimeout(function(){$('body').scrollTop(0);}, 200);
   };
@@ -135,9 +137,9 @@ $(function () {
   
   //on hover, change new links background colour
   $('#newLinks').on('mouseover', function(){
-    $(this).css({'background-color':'rgb(95, 174, 227)', 'background-image':'none'});
+    $(this).css('opacity', '.8');
   }).on('mouseout', function(){
-    $(this).css({'background-color':'rgb(47, 163, 230)', 'background-image':'linear-gradient(rgb(61, 170, 233), rgb(26, 153, 226))'});
+    $(this).css({'background-color':'#4d90fe', 'background-image':'-webkit-linear-gradient(top,#4d90fe,#4787ed)'});
   });
   
 });

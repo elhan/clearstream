@@ -23,14 +23,19 @@ $(function () {
   socket.on('data', function(data) {
     newLinks = data;
     var dif = listDifference();
-    //if clause is needed because there will always be 1 new item, since
-    //the list is constantly updated
+    
+    /* if clause is needed because there will always be 1 new item, since
+     * the list is constantly updated
+     */
     if(dif > 1){
+      //handle the newLinks bar display
       $('#sum').text(dif+" new links");
       $('#newLinks').slideDown();
       $('#newLinks').css({'position' : 'fixed', 'width' : '100%', 'max-width' : '698px'});
-      $('#links').css('padding-top','60px');
+      $('#links').css('padding-top','80px');
       $('#description').css('margin-bottom', '80px');
+      //handle favicon display
+      /$("#favicon").attr("href","favicon2.png");
     }
   });
   
@@ -137,9 +142,9 @@ $(function () {
   
   //on hover, change new links background colour
   $('#newLinks').on('mouseover', function(){
-    $(this).css('opacity', '.8');
+    $(this).css('opacity', '.6');
   }).on('mouseout', function(){
-    $(this).css({'background-color':'#4d90fe', 'background-image':'-webkit-linear-gradient(top,#4d90fe,#4787ed)'});
+    $(this).css({'background-color':'#4d90fe', 'background-image':'-webkit-linear-gradient(top,#4d90fe,#4787ed)', 'opacity':'.8'});
   });
   
 });

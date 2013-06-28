@@ -156,10 +156,13 @@ body {
 	font-size: 14px;
 	height: 40px;
 	color: white;
+	cursor: hand; 
+	cursor: pointer;
 	/*---background-color: rgb(47, 163, 230);
   background-image: linear-gradient(rgb(61, 170, 233), rgb(26, 153, 226));---*/
   background-color: #4d90fe; 
   background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+  opacity: .8;
 	text-align: center;
 	vertical-align: text-middle;
 	/*---*/

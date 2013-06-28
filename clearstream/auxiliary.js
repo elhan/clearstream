@@ -109,10 +109,12 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
       	    //check if the article has already been linked
       	    var link = _.find(linkList, function(urlObject) {
       	    	var similarity = txtSim.calculateSimilarity(urlObject.article.title, article.title);
-      	        if (similarity > 0.5){
+      	        if (similarity > 0.6){
       	        	console.log("Similarity:" + similarity + " for " + urlObject.article.title + " and " + article.title);
+      	        	return true;
       	        }
-      	      return urlObject.article.title == article.title; 
+      	      //return urlObject.article.title == article.title;
+      	      return false;
       	    });
       	    
       	    /* If the link already exists in the list, update the frequency and date. If the new

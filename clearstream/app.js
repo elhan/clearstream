@@ -90,7 +90,7 @@ sockets.sockets.on('connection', function() {
 
 
 // Every 5 seconds emit new list 
-setInterval(sendList, 3000);
+setInterval(sendList, 5000);
 
 
 /* Start a connection with twitter's Streaming API, and filter tweets that

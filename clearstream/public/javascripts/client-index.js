@@ -35,7 +35,8 @@ $(function () {
       $('#links').css('padding-top','80px');
       $('#description').css('margin-bottom', '80px');
       //handle favicon display
-      /$("#favicon").attr("href","favicon2.png");
+      //$("#favicon").attr("href","favicon2.png");
+      document.title = '('+dif+') '+'Clearstream';
     }
   });
   
@@ -119,12 +120,13 @@ $(function () {
       $('#links').append(linkStr(this));
     });
     
-    //hide new links counter
+    //hide new links counter & update title
     $('#sum').text('');
     $('#newLinks').css({'position' : 'relative'});
     $('#newLinks').slideUp();
     $('#links').css('padding-top','20px');
     $('#description').css('margin-bottom', '0px');
+    document.title = 'Clearstream';
     
     setTimeout(function(){$('body').scrollTop(0);}, 200);
   };

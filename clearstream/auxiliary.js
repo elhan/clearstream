@@ -4,12 +4,15 @@ var _ = require('underscore')
   , readable = new Readability({})
   , parser = new Parser(readable, {})
   , request = require('request')
+  , cheerio = require('cheerio')
 //  , iconv = require('iconv-lite')
   , keywords = require('./keywords.js')
   , txtSim = require('./textSimilarity.js');
 
 //expressions to clean the article fetched
 var tags = /(<([^>]+)>)/ig;
+var spaces = / +(?= )/g;
+var lines = /\r?\n|\r/g;
 var scripts = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 
 // gravity determines the speed at which time decay sets in.
@@ -71,6 +74,62 @@ function isSpam(link, spamWords) {
 
 
 /**
+ * Find the image in an article. The input is a cheerio object.
+ */
+
+function findImage($, title) {
+  var meta = $('meta');
+  var keys = Object.keys(meta);
+  var img = '';
+  
+  //check if meta tag exists
+  for(key in keys) {
+    if(meta[key] !== undefined && meta[key].attribs !== undefined && meta[key].attribs.property == 'og:image') {
+      img = meta[key].attribs.content;
+      //console.log('found in meta');
+    }
+    //if none of the meta tags match, check for image links in the header
+    if(key == keys.length-1 && img == '') {
+      var link = $('link');
+      var linkKeys = Object.keys(link); 
+      //check in all link tags
+      for(linkKey in linkKeys) {
+        if(link[linkKey] !== undefined && link[linkKey].attribs !== undefined && link[linkKey].attribs.rel == 'image_src') {
+          img = link[linkKey].attribs.href;
+          //console.log('found in links');
+        }
+        
+        //if none of the rel tags match, check article links that contain the title
+        if(linkKey == linkKeys.length-1 && img == '') {
+          var hrefs = $('href');
+          //search for an href that matches the title
+          for(href in hrefs) {
+            if(href.indexOf(title) !== -1) {
+              img = href;
+              //console.log('found in hrefs');
+            }
+          }
+        }
+      }
+    }
+  }
+  return img;
+}
+
+
+/**
+ * Cleans an article's title of unwanted substrings
+ */
+
+function cleanTitle(title) {
+  for(word in keywords.titleSpam) {
+    title = title.replace(word, '');
+  }
+  return title;
+}
+
+
+/**
  * The basic algorithm. Takes the linkList, the list's max length
  * and a tweet object as parameters, and updates the list
  */
@@ -91,60 +150,67 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	var article = {};
     
       		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)) {
+      		  var $ = cheerio.load(body);
       		  body = body.replace(scripts, "");
         	  parser.reset();
         	  parser.write(body);
         	  article = readable.getArticle();
         	  
-        	  /*//remove multiple white spaces
-        	  article.html = article.html.replace(/\s+/g, ' ');
-        	  //remove html tags
-        	  article.html = article.html.replace(tags, "");*/
-        	  
-        	  // check for empty title
+        	  //check if the algorithm was able to find a valid article
+        	  if(article.textLength > 300) {
+          	  article.title = cleanTitle(article.title);
+          	  //find the article's image
+              var image = findImage($, article.title);
+          	  //remove tags, line breaks and multiple white spaces and limit characters to 500
+          	  article.html = article.html.replace(tags, "").replace(lines,"").replace(spaces, "").substring(0,460) + '...';
+          	  
+          	  // check for empty title
               if (!article.title){
-                  return;
+                return;
               }
-        	  
-      	    //check if the article has already been linked
-      	    var link = _.find(linkList, function(urlObject) {
-      	    	var similarity = txtSim.calculateSimilarity(urlObject.article.title, article.title);
-      	        if (similarity > 0.6){
-      	        	console.log("Similarity:" + similarity + " for " + urlObject.article.title + " and " + article.title);
-      	        	return true;
-      	        }
-      	      //return urlObject.article.title == article.title;
-      	      return false;
-      	    });
-      	    
-      	    /* If the link already exists in the list, update the frequency and date. If the new
-      	     * link has a higher score, replace with the new url and update the score field.
-      	     */
-      	    if (link !== undefined) {
-              link.freq += 1; 
-              link.created_at = new Date(tweet.created_at);
-      
-      	      if (link.score < tweetScore(tweet)) {
-                link.score = tweetScore(tweet);
-                link.url = url;
-      	      } 
-      	      
-      	    } else {
-      	      
-              /* if the list is not full yet, push the new link. Otherwise, order the list by rank,
-               * remove the least element rank and insert the new link. 
-               */
-              if (_.size(linkList) < linkListLength){
-                linkList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: new Date(tweet.created_at), article: article});
-              } else {
-                min = _.min(linkList, function(link){return rank(link);});
-                min.url = url;
-                min.freq = 1;
-                min.score = tweetScore(tweet);
-                min.created_at =  new Date(tweet.created_at);
-                min.article = article;
-      	      } 
-      	    } 
+          	  
+        	    //check if the article has already been linked
+        	    var link = _.find(linkList, function(urlObject) {
+        	    	var similarity = txtSim.calculateSimilarity(urlObject.article.title, article.title);
+        	        if (similarity > 0.6){
+        	        	//console.log("Similarity:" + similarity + " for " + urlObject.article.title + " and " + article.title);
+        	        	return true;
+        	        }
+        	      //return urlObject.article.title == article.title;
+        	      return false;
+        	    });
+        	    
+        	    /* If the link already exists in the list, update the frequency and date. If the new
+        	     * link has a higher score, replace with the url and image, and update the score field.
+        	     */
+        	    if (link !== undefined) {
+                link.freq += 1; 
+                link.created_at = new Date(tweet.created_at);
+        
+        	      if (link.score < tweetScore(tweet)) {
+                  link.score = tweetScore(tweet);
+                  link.url = url;
+                  link.img = image;
+        	      } 
+        	      
+        	    } else {
+        	      
+                /* if the list is not full yet, push the new link. Otherwise, order the list by rank,
+                 * remove the least element rank and insert the new link. 
+                 */
+                if (_.size(linkList) < linkListLength){
+                  linkList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: new Date(tweet.created_at), article: article, img: image});
+                } else {
+                  min = _.min(linkList, function(link){return rank(link);});
+                  min.url = url;
+                  min.freq = 1;
+                  min.score = tweetScore(tweet);
+                  min.created_at =  new Date(tweet.created_at);
+                  min.article = article;
+                  min.img = image;
+        	      } 
+        	    }
+        		}//check if valid article
           } //check if spam
         } // response != undefined
       }); //request

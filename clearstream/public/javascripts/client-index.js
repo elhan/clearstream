@@ -136,7 +136,6 @@ $(function () {
     
     setTimeout(function(){
       $('body').scrollTop(0);
-      $('.link-text').dotdotdot();
     }, 200);
   };
   

@@ -162,7 +162,7 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
           	  //find the article's image
               var image = findImage($, article.title);
           	  //remove tags, line breaks and multiple white spaces and limit characters to 500
-          	  article.html = article.html.replace(tags, "").replace(lines,"").replace(spaces, "").substring(0,460) + '...';
+          	  article.html = article.html.replace(tags, "").replace(lines,"").replace(spaces, "").substring(0,260) + '...';
           	  
           	  // check for empty title
               if (!article.title){

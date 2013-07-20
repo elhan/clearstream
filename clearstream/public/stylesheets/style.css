@@ -1,16 +1,9 @@
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url('http://themes.googleusercontent.com/static/fonts/opensans/v5/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
-}
-
 .btn.btn-inverse {
 	background-color: rgb(55, 55, 55);
 }
 
 body {
-	font-family: 'Open Sans', sans-serif;
+	font-family: Arimo;
   color: rgb(55, 55, 55);
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
@@ -19,10 +12,6 @@ body {
 #clearstream-app {
 	padding: 0px;
 	background-color: white;
-}
-
-#cover {
-	padding-left: 40px;
 }
 
 #cover-description {
@@ -61,9 +50,15 @@ body {
 
 #text-space {
   padding-top: 102px;
-  padding-left: 120px;
   margin: 0px;
-  border-left: 1px solid rgb(179, 179, 177);
+}
+
+#empty-space {
+	margin: 0px;
+	padding-bottom: 100%;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-left: 1px solid rgb(179, 179, 177);
 }
 
 #header {
@@ -80,7 +75,7 @@ body {
 	font-size: 12px;
 	font-weight: lighter;
 	max-width: 640px;
-	margin-top: 0px;
+	margin: 0px;
 	border-top: 1px solid rgb(179, 179, 177);
 	border-bottom: 1px solid rgb(179, 179, 177);
 }
@@ -133,13 +128,14 @@ a:hover, a:visited, a:link, a:active {
 
 .link-img {
 	max-width: 180px;
-  max-height: 120px;
+  max-height: 125px;
 }
 
 .link-text {
 	line-height: 25px;
 	font-size: 17px;
-  max-height: 120px;
+	min-height: 75px;
+  max-height: 125px;
   overflow: hidden;
   font-weight: 300;
   text-align: justify;
@@ -177,8 +173,7 @@ a:hover, a:visited, a:link, a:active {
 }
 
 #newLinks {
-	left: -100px;
-	position: absolute;
+	position: fixed;
 	display: none;
 	width: 80px;
 	height: 80px;

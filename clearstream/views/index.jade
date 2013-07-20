@@ -7,7 +7,7 @@ html
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
-        link(rel='stylesheet', href="//fonts.googleapis.com/css?family=Open+Sans", type="text/css")
+        link(rel='stylesheet', href="//fonts.googleapis.com/css?family=Open+Sans|Arimo", type="text/css")
         script(src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
@@ -22,13 +22,14 @@ html
                 #cover-description-inner
                   span#title clearstream
                   span#subtitle filter out the noise
-            #text-space.span9
+            #empty-space.span1
+              #newLinks
+                p#sum
+                p#newLinks-text
+            #text-space.span8
               #header
                 #description
                   h5.description-title
-                    #newLinks
-                      p#sum
-                      p#newLinks-text
                     span WHAT'S HOT RIGHT NOW?
               #list-wrapper
                 ol#links

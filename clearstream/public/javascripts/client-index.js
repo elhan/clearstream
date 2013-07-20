@@ -13,6 +13,16 @@ $(function () {
     $('body').scrollTop(0);
   });
   
+  
+  //when a user scroll back to the top, remove shadow from the header
+  $(window).scroll(function() {
+    if($(window).scrollTop() == 0) {
+      $('.description-title').css({'-webkit-box-shadow' : '', 'box-shadow' : '' });
+    } else {
+      $('.description-title').css({'-webkit-box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px', 'box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px'});
+    }
+  });
+  
   /**
    * Update newLinks every time the socket emits data, and
    * calculate the sum of differences between the new list
@@ -42,6 +52,7 @@ $(function () {
    */
    
   socket.on('initialize', function(data) {
+    $('ol').empty();
     newLinks = data;
     oldLinks = sortLinks(data);
     $.each(oldLinks, function(){
@@ -137,6 +148,14 @@ $(function () {
     setTimeout(function(){
       $('body').scrollTop(0);
     }, 200);
+    
+    setTimeout(function(){
+      $('.link-img-div').each(function(){
+        if($(this).height() < 40) {
+          $(this).remove();
+        }
+      });
+    }, 2000);
   };
   
   

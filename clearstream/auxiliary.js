@@ -5,15 +5,18 @@ var _ = require('underscore')
   , parser = new Parser(readable, {})
   , request = require('request')
   , cheerio = require('cheerio')
+  , S = require('string')
 //  , iconv = require('iconv-lite')
   , keywords = require('./keywords.js')
   , txtSim = require('./textSimilarity.js');
 
 //expressions to clean the article fetched
 var tags = /(<([^>]+)>)/ig;
-var spaces = / +(?= )/g;
-var lines = /\r?\n|\r/g;
+var spaces = /\s+/g;
+var lines = /(\r\n|\n|\r)/gm;
 var scripts = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+var dots = /\.{4,}/;
+var sentences = /[^\.!;:\?]+[\.!;:\?]+/g;
 
 // gravity determines the speed at which time decay sets in.
 var gravity = 1.6;
@@ -26,7 +29,6 @@ var gravity = 1.6;
 function tweetScore(tweet) {
   var score = 1;
   if(tweet.user.followers_count > 100){
-	//score = Math.log(1+Math.pow(tweet.user.followers_count, 2)) - 2;
     score = Math.log(Math.pow(tweet.user.followers_count, 1.5)) - 2;
   }
   return score;
@@ -77,7 +79,7 @@ function isSpam(link, spamWords) {
  * Find the image in an article. The input is a cheerio object.
  */
 
-function findImage($, title) {
+function findImage($, title, link) {
   var meta = $('meta');
   var keys = Object.keys(meta);
   var img = '';
@@ -105,8 +107,13 @@ function findImage($, title) {
           //search for an href that matches the title
           for(href in hrefs) {
             if(href.indexOf(title) !== -1) {
-              img = href;
-              //console.log('found in hrefs');
+              //check if the image url is complete
+              if(href.indexOf(url.hostname) !== -1)
+                img = href;
+              else 
+                img = url.hostname + href;
+                console.log(link.hostname);
+                console.log('found in hrefs:  ' + img);
             }
           }
         }
@@ -118,16 +125,71 @@ function findImage($, title) {
 
 
 /**
- * Cleans an article's title of unwanted substrings
+ * Clean, truncate and clean an article's title
  */
 
-function cleanTitle(title) {
-  for(word in keywords.titleSpam) {
-    title = title.replace(word, '');
+function cleanTitle(title, maxChars) {
+  
+  //remove spammy words like [photo] etc.
+  for(var i=0; i<keywords.titleSpam.length; i++) {
+    title = title.replace(keywords.titleSpam[i], ' ');
   }
-  return title;
+
+  title = title.replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
+  var finalTitle = '';
+  var words = title.split(' ');
+  var tempWord = '';
+  
+  for(var i=0; i<words.length; i++) {
+    tempWord = words[i];
+    if(finalTitle.length < maxChars) {
+      //capitalize each word in the title
+      tempWord = S(tempWord).capitalize().s;
+      finalTitle = finalTitle + tempWord + ' ';
+    } else { 
+      finalTitle = finalTitle + '...';
+      break;
+    }
+  }
+  return finalTitle;
 }
 
+
+/**
+ * Clean and truncate an article's text
+ */
+
+function cleanText(text, maxChars) {
+  var finalText = '';
+  var words = [];//
+  text = text.replace(tags, " ").replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
+  
+  //break the text into sentences and capitalize the first word in each
+  var sent = text.match(sentences);
+  text = '';
+  for(var i=0; i< sent.length; i++) {
+    words = sent[i].split(" ");
+    S(words[0]).capitalize().s;
+    sent[i] = '';
+    for(var k=0; k<words.length; k++) {
+      sent[i] = sent[i] + words[k] + " ";
+    }
+    text = text + sent[i] + " ";
+  }
+  
+  words = text.split(" ");
+  
+  //truncate
+  for(var j=0; j<words.length; j++) {
+    if(finalText.length < maxChars) {
+      finalText = finalText + words[j] + ' ';
+    } else { 
+      finalText = finalText + '...';
+      break;
+    };
+  }
+  return finalText;
+}
 
 /**
  * The basic algorithm. Takes the linkList, the list's max length
@@ -136,7 +198,7 @@ function cleanTitle(title) {
  
 exports.spaceSaving =  function(linkList, linkListLength, tweet) {
   var min = {};
-  
+
   //Make sure it was a valid tweet
   if (tweet.text !== undefined) {
   
@@ -151,18 +213,18 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
     
       		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)) {
       		  var $ = cheerio.load(body);
-      		  body = body.replace(scripts, "");
+      		  body = body.replace(scripts, " ");
         	  parser.reset();
         	  parser.write(body);
         	  article = readable.getArticle();
         	  
         	  //check if the algorithm was able to find a valid article
         	  if(article.textLength > 300) {
-          	  article.title = cleanTitle(article.title);
+          	  article.title = cleanTitle(article.title, 140);
           	  //find the article's image
-              var image = findImage($, article.title);
+              var image = findImage($, article.title, url);
           	  //remove tags, line breaks and multiple white spaces and limit characters to 500
-          	  article.html = article.html.replace(tags, "").replace(lines,"").replace(spaces, "").substring(0,260) + '...';
+              article.html = cleanText(article.html, 250);
           	  
           	  // check for empty title
               if (!article.title){

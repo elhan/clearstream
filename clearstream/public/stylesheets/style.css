@@ -50,7 +50,9 @@ body {
 
 #text-space {
   padding-top: 102px;
+  padding-left: 5%;
   margin: 0px;
+  border-left: 1px solid rgb(179, 179, 177);
 }
 
 #empty-space {
@@ -80,7 +82,8 @@ body {
 	border-bottom: 1px solid rgb(179, 179, 177);
 }
 
-.description-title span {
+#hot {
+	float: left;
 	line-height: 40px;
 	color: rgb(179, 179, 177);
 }
@@ -89,11 +92,14 @@ a {
 	color: rgb(55, 55, 55);
 }
 
-a:hover, a:visited, a:link, a:active {
+a:hover, a:link, a:active {
 	color: rgb(55, 55, 55);
   text-decoration: none;
 }
 
+a:visited {
+  color: rgb(179, 179, 177);
+}
 
 #links {
   margin-left: 0px;
@@ -172,13 +178,15 @@ a:hover, a:visited, a:link, a:active {
 	color: rgb(179, 179, 177);
 }
 
+.kippt a:hover {
+	color: rgb(136, 172, 219)
+}
+
 #newLinks {
-	position: fixed;
+  float: right;
+  line-height: 40px;
 	display: none;
-	width: 80px;
-	height: 80px;
-	background-color: rgb(0,0,0);
-	color: white;
+	color: rgb(179, 179, 177);
 	cursor: hand; 
 	cursor: pointer;
 	text-align: center;
@@ -186,20 +194,12 @@ a:hover, a:visited, a:link, a:active {
 }
 
 #sum {
-	margin-top: 10px;
-	margin-bottom: 0px;
-	line-height: 40px;
-	font-size: 40px;
+	color: rgb(55, 55, 55);
+	padding-left: 5px;
+	padding-right: 5px;
 	font-weight: bold;
-}
-
-#newLinks:hover {
-	/*background-color: rgb(71, 135, 237);*/
-	background-color: rgb(136, 172, 219);
-}
-
-#newLinks-text {
-	display: block;
+	font-size: 18px; 
+	line-height:20px
 }
 
 #list-wrapper {

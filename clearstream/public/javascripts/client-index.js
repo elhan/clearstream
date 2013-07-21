@@ -169,4 +169,29 @@ $(function () {
     render();
   });
   
+  
+  /**
+   * Hover functionality for newLinks
+   */
+  
+  $('#newLinks').on('mouseenter', function() {
+    $('#sum').css({'color' : 'rgb(136, 172, 219)'});
+    $('#newLinks-text').css({'color' : 'rgb(136, 172, 219)', 'text-decoration' : 'underline'});
+  }).on('mouseleave', function(){
+    $('#sum').css({'color' : 'rgb(55,55,55)'});
+    $('#newLinks-text').css({'color' : 'rgb(179, 179, 177)', 'text-decoration' : 'none'});
+  });
+  
+  
+  /**
+   * Hover functionality for articles
+   */
+  
+  $('.link').on('mouseenter', function() {
+    console.log('lol');
+    $(this).children('.link-title').css('color', 'rgb(136, 172, 219)');
+  }).on('mouseleave', function(){
+    $(this).children('.link-title').css('color', 'rgb(55, 55, 55)');
+  });
+  
 });

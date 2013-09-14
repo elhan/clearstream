@@ -178,6 +178,7 @@ a:visited {
   height: auto;
   line-height: 34px;
 	margin: 0px;
+	vertical-align: middle;
 }
 
 .link-footer-text {

@@ -5,8 +5,8 @@ var _ = require('underscore')
   , parser = new Parser(readable, {})
   , request = require('request')
   , cheerio = require('cheerio')
+  , jsc = require("jschardet")
   , S = require('string')
-//  , iconv = require('iconv-lite')
   , keywords = require('./keywords.js')
   , txtSim = require('./textSimilarity.js');
 
@@ -68,11 +68,20 @@ function isSpam(link, spamWords) {
   var isSpam = false;
   for(var i=0; i<spamWords.length; i++) {
   	if(link.hostname.indexOf(spamWords[i]) !== -1) {
-	  isSpam = true;
+	    isSpam = true;
   	}
   }
   return isSpam;
 };
+
+
+/**
+ * Determines if an article is encoded in utf8 or not
+ */
+function isUtf(buffer) {
+  var jscResult = jsc.detect(buffer);
+  return (jscResult.encoding == 'windows-1252' &&  jscResult.confidence > 0.8);
+}
 
 
 /**
@@ -90,12 +99,14 @@ function findImage($, title, link) {
       img = meta[key].attribs.content;
       //console.log('found in meta');
     }
+    
     //if none of the meta tags match, check for image links in the header
     if(key == keys.length-1 && img == '') {
       var link = $('link');
-      var linkKeys = Object.keys(link); 
+      var linkKeys = Object.keys(link);
+      
       //check in all link tags
-      for(linkKey in linkKeys) {
+      for(linkKey in linkKeys) {  
         if(link[linkKey] !== undefined && link[linkKey].attribs !== undefined && link[linkKey].attribs.rel == 'image_src') {
           img = link[linkKey].attribs.href;
           //console.log('found in links');
@@ -108,16 +119,12 @@ function findImage($, title, link) {
           for(href in hrefs) {
             if(href.indexOf(title) !== -1) {
               //check if the image url is complete
-              if(href.indexOf(url.hostname) !== -1)
-                img = href;
-              else 
-                img = url.hostname + href;
-                console.log(link.hostname);
-                console.log('found in hrefs:  ' + img);
+              img = (href.indexOf(url.hostname) !== -1) ? href : url.hostname + href;
+              //console.log('found in hrefs:');
             }
           }
         }
-      }
+      } //check in tags
     }
   }
   return img;
@@ -125,31 +132,38 @@ function findImage($, title, link) {
 
 
 /**
- * Clean, truncate and clean an article's title
+ * Truncate and clean an article's title
  */
 
 function cleanTitle(title, maxChars) {
-  
-  //remove spammy words like [photo] etc.
-  for(var i=0; i<keywords.titleSpam.length; i++) {
-    title = title.replace(keywords.titleSpam[i], ' ');
-  }
-
-  title = title.replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
   var finalTitle = '';
-  var words = title.split(' ');
-  var tempWord = '';
   
-  for(var i=0; i<words.length; i++) {
-    tempWord = words[i];
-    if(finalTitle.length < maxChars) {
-      //capitalize each word in the title
-      tempWord = S(tempWord).capitalize().s;
-      finalTitle = finalTitle + tempWord + ' ';
-    } else { 
-      finalTitle = finalTitle + '...';
-      break;
+  try {
+    //remove spammy words like [photo] etc.
+    for(var i=0; i<keywords.titleSpam.length; i++) {
+      title = title.replace(keywords.titleSpam[i], ' ');
     }
+  
+    title = title.replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
+    
+    var words = title.split(' ');
+    var tempWord = '';
+    
+    for(var i=0; i<words.length; i++) {
+      tempWord = words[i];
+      if(finalTitle.length < maxChars) {
+        //capitalize each word in the title
+        tempWord = S(tempWord).capitalize().s;
+        finalTitle = finalTitle + tempWord + ' ';
+      } else { 
+        finalTitle = finalTitle + '...';
+        break;
+      }
+    }
+  } catch(e) {
+    console.log('something went wrong while processing the title!');
+    console.log(e);
+    finalTitle = title;
   }
   return finalTitle;
 }
@@ -162,31 +176,40 @@ function cleanTitle(title, maxChars) {
 function cleanText(text, maxChars) {
   var finalText = '';
   var words = [];//
-  text = text.replace(tags, " ").replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
   
-  //break the text into sentences and capitalize the first word in each
-  var sent = text.match(sentences);
-  text = '';
-  for(var i=0; i< sent.length; i++) {
-    words = sent[i].split(" ");
-    S(words[0]).capitalize().s;
-    sent[i] = '';
-    for(var k=0; k<words.length; k++) {
-      sent[i] = sent[i] + words[k] + " ";
+  try {
+    text = text.replace(tags, " ").replace(lines, " ").replace(spaces, " ").replace(dots, "...").replace('&# ;', '...');
+    
+    //break the text into sentences and capitalize the first word in each
+    var sent = text.match(sentences);
+    text = '';
+    for(var i=0; i< sent.length; i++) {
+      words = sent[i].split(" ");
+      S(words[0]).capitalize().s;
+      sent[i] = '';
+      for(var k=0; k<words.length; k++) {
+        sent[i] = sent[i] + words[k] + " ";
+      }
+      text = text + sent[i] + " ";
     }
-    text = text + sent[i] + " ";
-  }
+    
+    words = text.split(" ");
+    
+    //truncate
+    for(var j=0; j<words.length; j++) {
+      if(finalText.length < maxChars) {
+        finalText = finalText + words[j] + ' ';
+      } else { 
+        finalText = finalText + '...';
+        break;
+      };
+    }
   
-  words = text.split(" ");
-  
-  //truncate
-  for(var j=0; j<words.length; j++) {
-    if(finalText.length < maxChars) {
-      finalText = finalText + words[j] + ' ';
-    } else { 
-      finalText = finalText + '...';
-      break;
-    };
+  //if something went wrong, just return the default text
+  } catch(e) {
+    console.log('something went wrong while processing the text! Error: ');
+    console.log(e);
+    finalText = text;
   }
   return finalText;
 }
@@ -204,15 +227,18 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
   
     //check if the tweet contains a url
     if(tweet.entities.urls.length>0) {
-      request({uri: tweet.entities.urls[0].expanded_url, encoding:'utf-8'},
+      request({uri: tweet.entities.urls[0].expanded_url, encoding: 'utf8'},
           function (error, response, body) {
       
         if(response !== undefined) {         
         	var url = response.request.uri;
         	var article = {};
     
-      		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)) {
+      		if (error == null && response.statusCode == 200 && !isSpam(url, keywords.spamUrls)
+      		    && isUtf(body)) {  
+      		  
       		  var $ = cheerio.load(body);
+      		  
       		  body = body.replace(scripts, " ");
         	  parser.reset();
         	  parser.write(body);
@@ -234,15 +260,13 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	    //check if the article has already been linked
         	    var link = _.find(linkList, function(urlObject) {
         	    	var similarity = txtSim.calculateSimilarity(urlObject.article.title, article.title);
-        	        if (similarity > 0.6){
-        	        	//console.log("Similarity:" + similarity + " for " + urlObject.article.title + " and " + article.title);
-        	        	return true;
-        	        }
+        	      if (similarity > 0.6) return true;
         	      //return urlObject.article.title == article.title;
         	      return false;
         	    });
         	    
-        	    /* If the link already exists in the list, update the frequency and date. If the new
+        	    /* 
+        	     * If the link already exists in the list, update the frequency and date. If the new
         	     * link has a higher score, replace with the url and image, and update the score field.
         	     */
         	    if (link !== undefined) {
@@ -257,10 +281,11 @@ exports.spaceSaving =  function(linkList, linkListLength, tweet) {
         	      
         	    } else {
         	      
-                /* if the list is not full yet, push the new link. Otherwise, order the list by rank,
+                /*
+                 *  if the list is not full yet, push the new link. Otherwise, order the list by rank,
                  * remove the least element rank and insert the new link. 
                  */
-                if (_.size(linkList) < linkListLength){
+                if (_.size(linkList) < linkListLength) {
                   linkList.push({url: url, freq: 1, score: tweetScore(tweet), created_at: new Date(tweet.created_at), article: article, img: image});
                 } else {
                   min = _.min(linkList, function(link){return rank(link);});

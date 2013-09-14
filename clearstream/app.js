@@ -79,7 +79,8 @@ function sendList() {
 }
 
 
-/* If the client just connected, give them fresh data.
+/*
+ *  If the client just connected, give them fresh data.
  * The 'initialize' event is used to inform the client 
  * this is the first time data is send, and the list needs to 
  * be initialized
@@ -93,7 +94,8 @@ sockets.sockets.on('connection', function() {
 setInterval(sendList, 5000);
 
 
-/* Start a connection with twitter's Streaming API, and filter tweets that
+/*
+ *  Start a connection with twitter's Streaming API, and filter tweets that
  * contain one of the listed keywords and their language is Greek.
  */
 

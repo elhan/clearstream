@@ -31,9 +31,10 @@ $(function () {
    
   socket.on('data', function(data) {
     newLinks = data;
-    var dif = listDifference();
+    var dif = listDifference().length;
     
-    /* if clause is needed because there will always be 1 new item, since
+    /*
+     *  if clause is needed because there will always be 1 new item, since
      * the list is constantly updated
      */
     if(dif > 1){
@@ -67,7 +68,7 @@ $(function () {
    */
    
   var listDifference = function() {
-    return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), _.pluck(_.pluck(oldLinks, "article"), "title")).length;
+    return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), _.pluck(_.pluck(oldLinks, "article"), "title"));
   };
   
   
@@ -88,20 +89,40 @@ $(function () {
    */
   
   var linkStr = function(link) {
-    
     //default string for text row, if no image is available
     var rowString = '<div class="row-fluid">' + 
         '<div class="link-text">' + link.article.html + '</div></div></a></article></li>';
     
     if(link.img.length > 1) {
-      rowString =  '<div class="row-fluid"><div class="span4 link-img-div">' +
-      '<img class="link-img" src="' + link.img + '" title="' + link.article.title + '"></div>' + 
-      '<div class="link-text">' + link.article.html + '</div></div></a></article></li>';
+      rowString =  
+        ['<div class="row-fluid"><div class="span4 link-img-div">',
+         '<img class="link-img" src="', link.img,
+         '" title="' + link.article.title + '"></div>',
+         '<div class="link-text">' + link.article.html,
+         '</div></div></a></article></li>'
+        ].join('');
+    }
+    
+    //add label and appropriate classs for links not seen before
+    var title = '';
+    if(link.isNewLink) {
+      title =
+        ['<a href="', link.url.href,
+         '" target="_blank" class="link-title new">',
+         link.article.title, '</a>',
+         '<span class="label label-success">new</span>'
+        ].join('');
+ 
+    } else {
+      title = 
+        ['<a href="', link.url.href,
+         '" target="_blank" class="link-title">',
+         link.article.title + '</a>'
+        ].join('');
     }
     
     var str = '<li class="link"><article>' +
-        '<a href="' + link.url.href + '" target="_blank" class="link-title">' +
-        link.article.title + '</a>' +
+        title +
         '<p class="link-info"><span class="link-footer-text">last mentioned on</span><span class="link-footer-value">' + 
         moment(link.created_at).format('MMM Do, HH:mm:ss') + '</span><span class="separator">|</span>' + 
         '<span class="link-footer-text">mentions:</span><span class="link-footer-value">' +
@@ -126,6 +147,12 @@ $(function () {
    */
   
   var render = function() {
+    //remove 'new' labels
+    $('.label').remove();
+    
+    //keep a list with links not seen before
+    var tempList = _.difference(_.pluck(_.pluck(newLinks, 'url'), 'href'), _.pluck(_.pluck(oldLinks, 'url'), 'href'));
+    
     //update link lists
     oldLinks.length = 0;
     _.each(newLinks, function(link){
@@ -136,7 +163,9 @@ $(function () {
     
     //render the new list
     $('ol').empty();
-    $.each(oldLinks, function(){
+    
+    $.each(oldLinks, function() {    
+      this.isNewLink = ( _.indexOf(tempList, this.url.href) !== -1 );
       $('#links').append(linkStr(this));
     });
     
@@ -165,9 +194,7 @@ $(function () {
    * link list and fill it with the new data.
    */
 
-  $('#newLinks').on('click', function() {
-    render();
-  });
+  $('#newLinks').on('click', render);
   
   
   /**

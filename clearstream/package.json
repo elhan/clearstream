@@ -20,7 +20,8 @@
     "moment" : "*",
     "socket.io" : ">=0.9.16",
     "cheerio" : "*",
-    "string" : "*"
+    "string" : "*",
+	"jschardet" : "*"
   },
   "engines": {
     "node": "0.10.x",

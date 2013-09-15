@@ -59,6 +59,9 @@ $(function () {
     $.each(oldLinks, function(){
       $('#links').append(linkStr(this));
     });
+    
+    //hover function goes here, since the links are only now rendered
+    articleHover();
   });
   
   
@@ -174,6 +177,8 @@ $(function () {
     $('#newLinks').fadeOut();
     document.title = 'Clearstream';
     
+    articleHover();
+    
     setTimeout(function(){
       $('body').scrollTop(0);
     }, 200);
@@ -189,16 +194,47 @@ $(function () {
   
   
   /**
+   * Redirect to twitter for login
+   */
+  
+  $('#login').on('click', function() {
+    $.get('/auth/twitter', function(res) {
+      console.log(req);
+      console.log(res);
+    });
+  });
+  
+  
+  /**
    * Handle the refresh button behaviour. When refresh is pressed request the 
    * current list. The response data is the new topLinks list. Clear the
    * link list and fill it with the new data.
    */
 
-  $('#newLinks').on('click', render);
+  $('#newLinks').on('click', render); 
   
   
   /**
-   * Hover functionality for newLinks
+   * Hover functionality for articles
+   */
+  
+  function articleHover() {
+    $('.link').hover(function(){
+      $this = $(this);
+      if($this.find('.new')) {
+        $this.find('.label').fadeOut(1500, function() { $(this).remove(); });
+        $this.find('.link-title').removeClass('new');
+      }  
+      $this.find('.link-title').addClass('hover');
+    },
+    function(){
+      $(this).find('.link-title').removeClass('hover');
+    });
+  }
+  
+  
+  /**
+   * Hover functionality for newLinks counter button
    */
   
   $('#newLinks').on('mouseenter', function() {
@@ -207,18 +243,6 @@ $(function () {
   }).on('mouseleave', function(){
     $('#sum').css({'color' : 'rgb(55,55,55)'});
     $('#newLinks-text').css({'color' : 'rgb(179, 179, 177)', 'text-decoration' : 'none'});
-  });
-  
-  
-  /**
-   * Hover functionality for articles
-   */
-  
-  $('.link').on('mouseenter', function() {
-    console.log('lol');
-    $(this).children('.link-title').css('color', 'rgb(136, 172, 219)');
-  }).on('mouseleave', function(){
-    $(this).children('.link-title').css('color', 'rgb(55, 55, 55)');
   });
   
 });

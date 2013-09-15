@@ -7,6 +7,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , twitter = require('ntwitter')
+  , authTwitter = require('./routes/auth/authTwitter.js')
   , credentials = require('./credentials.js')
   , aux = require('./auxiliary.js')
   , keywords = require('./keywords.js');
@@ -17,10 +18,6 @@ var app = express();
 //initialise lists
 var linkList = [];
 var linkListLength = 50;
-
-
-//Create the HTTP server with the express app as an argument
-var server = http.createServer(app);
 
 
 var t = new twitter({
@@ -38,6 +35,8 @@ app.set('view engine', 'jade');
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use(express.cookieParser('shhhh, very secret'));
+app.use(express.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.locals.moment = require('moment');
@@ -50,6 +49,10 @@ if ('development' == app.get('env')) {
 }
 
 
+//Create the HTTP server with the express app as an argument
+var server = http.createServer(app);
+
+
 //Render the index page
 app.get('/', function(req, res) {
   res.render('index');
@@ -60,6 +63,19 @@ app.get('/', function(req, res) {
 app.get('/top', function(req, res) {
   res.send({ data: linkList });
 });
+
+
+//Redirect the user to Twitter for authentication 
+app.get('/auth/twitter', authTwitter.authenticate);
+
+
+/*
+ * Twitter will redirect the user to this URL after approval.  Finish the
+ * authentication process by attempting to obtain an access token.  If
+ * access was granted, the user will be logged in.  Otherwise,
+ * authentication has failed
+ */
+app.get('/auth/twitter/callback', authTwitter.redirect);
 
 
 //Start a Socket.IO listen

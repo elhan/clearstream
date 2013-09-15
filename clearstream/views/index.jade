@@ -4,7 +4,7 @@ html
         title Clearstream
         meta(http-equiv="content-type", content="text/html; charset=UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css")
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css")
         link(rel="stylesheet", href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
         link(rel='stylesheet', href="//fonts.googleapis.com/css?family=Open+Sans|Arimo", type="text/css")
@@ -12,6 +12,7 @@ html
         script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
+        script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js")
         script(src="/javascripts/client-index.js")        
         
     body
@@ -22,11 +23,19 @@ html
                 #cover-description-inner
                   span#title clearstream
                   span#subtitle filter out the noise
+                  #login-wrap
+                    button.btn#login 
+                      i.icon-twitter 
+                        span Sign in with Twitter
             #text-space.span8
               #header
                 .hidden-desktop#cover-tablet
                   span#title-tablet CLEARSTREAM
                   span#subtitle-tablet filter out the noise
+                  #login-wrap
+                    button.btn#login
+                      i.icon-twitter 
+                        span Sign in with Twitter
                 #description
                   .row-fluid.description-title
                     #hot WHAT'S HOT RIGHT NOW?

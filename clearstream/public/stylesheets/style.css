@@ -1,70 +1,113 @@
-.btn.btn-inverse {
-	background-color: rgb(55, 55, 55);
-}
-
 body {
-	font-family: Arimo;
-  color: rgb(55, 55, 55);
+  font-family: Arimo;
+  color: rgb(77,77,77);
   padding: 0px;
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
 }
 
 #clearstream-app {
-	padding: 0px;
-	background-color: white;
+  padding: 0px;
+  background-color: white;
 }
 
 #cover-description {
-	position: fixed;
+  position: fixed;
   min-height: 100%;
 }
 
 #cover-description-inner {
-	padding-top: 100%;
-	padding-left: 40px;
+  padding-top: 162%;
 }
 
 #title {
-	display: block;
-	line-height: 40px;
+  display: block;
+  line-height: 40px;
   font-size: 30px;
-	color: rgb(0,0,0);
-	font-weight: 900;
+  color: rgb(0,0,0);
+  font-weight: 900;
+  text-align: center;
 }
 
 #title-tablet {
-	line-height: 40px;
+  line-height: 40px;
   font-size: 30px;
   color: rgb(0,0,0);
   font-weight: 900;
 }
 
 #subtitle {
-	display:block;
-	font-size: 20px;
-	color: rgb(179, 179, 177);
-	font-weight: 100;
+  display:block;
+  font-size: 20px;
+  color: rgb(179, 179, 177);
+  font-weight: 100;
+  text-align: center;
 }
 
 #subtitle-tablet {
-	padding-left: 20px;
-	font-size: 20px;
+  padding-left: 20px;
+  font-size: 20px;
   color: rgb(179, 179, 177);
   font-weight: 100;
 }
 
 #subtitle-line {
-	display: block;
+  display: block;
   margin-top: 8px;
   margin-bottom: 10px;
-  border-bottom-color: rgb(55, 55, 55);
+  border-bottom-color: rgb(51, 51, 50);
   border-bottom-style: solid;
   border-bottom-width: 1px;
 }
 
+#login-wrap {
+  text-align: center;
+  padding: 30px;
+}
+
+#login {
+  padding: 5px 15px 5px 15px;
+  color: #f7f7f7;
+  text-shadow: none;
+  border-radius: 20px;
+ /* background: #4497F5 !important;*/
+  background:rgb(136, 172, 219);
+  box-shadow: none;
+  border: 0px;
+  -o-transition:.2s;
+  -ms-transition:.2s;
+  -moz-transition:.2s;
+  -webkit-transition:.2s;
+  transition:.2s;
+}
+
+#login:hover {
+	background: #00acee !important;
+  box-shadow:
+  0 0 0 1px white,
+  0 0 0 2px #00acee,
+  0 0 0 3px #00acee;
+  -moz-box-shadow:
+  0 0 0 1px white,
+  0 0 0 2px #00acee,
+  0 0 0 3px #00acee;
+  -webkit-shadow:
+  0 0 0 1px white,
+  0 0 0 2px #00acee,
+  0 0 0 3px #00acee;
+}
+
+.icon-twitter {
+  font-size: 18px;
+}
+
+.icon-twitter span {
+  padding-left: 4px;
+  font-size: 14px;
+}
+
 #learn-more {
-  color: rgb(55, 55, 55);
+  color: #222222;
   padding-left: 0px;
 }
 
@@ -76,44 +119,41 @@ body {
 }
 
 #empty-space {
-	margin: 0px;
-	padding-bottom: 100%;
-	padding-left: 20px;
-	padding-right: 20px;
-	border-left: 1px solid rgb(179, 179, 177);
+  margin: 0px;
+  padding-bottom: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-left: 1px solid rgb(179, 179, 177);
 }
 
 #header {
-	width: 100%;
-	max-width: 640px;
-	top: 0px;
-	padding-top: 40px;
-	background-color: white;
-	position: fixed;
-	z-index: 2;
+  width: 100%;
+  max-width: 640px;
+  top: 0px;
+  padding-top: 40px;
+  background-color: white;
+  position: fixed;
+  z-index: 2;
 }
 
 .description-title {
-	font-size: 12px;
-	font-weight: lighter;
-	max-width: 640px;
-	margin: 0px;
-	border-top: 1px solid rgb(179, 179, 177);
-	border-bottom: 1px solid rgb(179, 179, 177);
+  font-size: 12px;
+  font-weight: lighter;
+  max-width: 640px;
+  margin: 0px;
+  border-top: 1px solid rgb(179, 179, 177);
+  border-bottom: 1px solid rgb(179, 179, 177);
 }
 
 #hot {
-	float: left;
-	line-height: 40px;
-	color: rgb(179, 179, 177);
-}
-
-a {
-	color: rgb(55, 55, 55);
+  float: left;
+  line-height: 40px;
+  color: rgb(179, 179, 177);
 }
 
 a:hover, a:link, a:active {
-	color: rgb(55, 55, 55);
+  /*color: rgb(55, 55, 55);*/
+  color: rgb(77,77,77);
   text-decoration: none;
 }
 
@@ -127,18 +167,23 @@ a:visited {
 }
 
 .link {
-	padding-top: 40px;
-	padding-bottom: 40px;
+  padding-top: 40px;
+  padding-bottom: 40px;
   max-height: 340px;
   overflow: hidden;
   border-bottom-color: rgb(242, 242, 240);
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  -o-transition:.2s;
+  -ms-transition:.2s;
+  -moz-transition:.2s;
+  -webkit-transition:.2s;
+  transition:.2s;
 }
 
 .link:hover {
-	 /*border-bottom-color: rgb(71, 135, 237);*/
-	 border-bottom-color: rgb(136, 172, 219);
+   /*border-bottom-color: rgb(71, 135, 237);*/
+   border-bottom-color: rgb(136, 172, 219);
 }
 
 .link-hostname {
@@ -153,14 +198,14 @@ a:visited {
 }
 
 .link-img {
-	max-width: 180px;
+  max-width: 180px;
   max-height: 125px;
 }
 
 .link-text {
-	line-height: 25px;
-	font-size: 17px;
-	min-height: 75px;
+  line-height: 25px;
+  font-size: 17px;
+  min-height: 75px;
   max-height: 125px;
   overflow: hidden;
   font-weight: 300;
@@ -172,66 +217,82 @@ a:visited {
 }
 
 .link-title {
-	color: #222222;
-	font-size: 28px;
+  /*color: #222222;*/
+  color: rgb(77,77,77);
+  font-size: 28px;
   font-weight: bold;
   height: auto;
   line-height: 34px;
-	margin: 0px;
-	vertical-align: middle;
+  margin: 0px;
+  vertical-align: middle;
+  -o-transition:.2s;
+  -ms-transition:.2s;
+  -moz-transition:.2s;
+  -webkit-transition:.2s;
+  transition:.2s;
+}
+
+.link-title.hover {
+ /* color: rgb(136, 172, 219);*/
+  color: black;
+}
+
+.label-success {
+  margin-left: 10px;
+  background-color:  rgb(136, 172, 219);
 }
 
 .link-footer-text {
-	margin-right: 5px;
-	margin-left: 0px;
+  margin-right: 5px;
+  margin-left: 0px;
 }
 
 .link-footer-value {
-	margin-left: 0px;
+  margin-left: 0px;
 }
 
 .separator {
-	margin-left: 5px;
-	margin-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .kippt a {
-	color: rgb(179, 179, 177);
+  color: rgb(179, 179, 177);
 }
 
 .kippt a:hover {
-	color: rgb(136, 172, 219)
+  color: rgb(136, 172, 219)
 }
 
 #newLinks {
   float: right;
   line-height: 40px;
-	display: none;
-	color: rgb(179, 179, 177);
-	cursor: hand; 
-	cursor: pointer;
-	text-align: center;
-	vertical-align: text-middle;
+  display: none;
+  color: rgb(179, 179, 177);
+  cursor: hand; 
+  cursor: pointer;
+  text-align: center;
+  vertical-align: text-middle;
 }
 
 #sum {
-	color: rgb(55, 55, 55);
-	padding-left: 5px;
-	padding-right: 5px;
-	font-weight: bold;
-	font-size: 18px; 
-	line-height:20px
+  color: rgb(55, 55, 55);
+  padding-left: 5px;
+  padding-right: 5px;
+  font-weight: bold;
+  font-size: 18px; 
+  line-height:20px
 }
 
 #list-wrapper {
-	max-width: 640px;
-	position: relative;
+  max-width: 640px;
+  position: relative;
 }
 
 #footer {
   border-top: 1px solid rgb(179, 179, 177);
-	margin-top: 40px;
-	text-align: center;
-	max-width: 640px;
-	margin-bottom: 80px;
+  margin-top: 40px;
+  text-align: center;
+  max-width: 640px;
+  margin-bottom: 80px;
 }

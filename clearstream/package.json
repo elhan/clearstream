@@ -18,7 +18,10 @@
     "readabilitySAX": "*",
     "request": "*",
     "moment" : "*",
-    "socket.io" : ">=0.9.16"
+    "socket.io" : ">=0.9.16",
+    "cheerio" : "*",
+    "string" : "*",
+	"jschardet" : "*"
   },
   "engines": {
     "node": "0.10.x",

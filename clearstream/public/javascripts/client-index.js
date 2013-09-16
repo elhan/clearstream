@@ -4,6 +4,9 @@ $(function () {
   var topUrl = indexUrl.concat('top');
   var newLinks = [];
   var oldLinks = [];
+  //holds all links read for storing in localstorage
+  var linksRead = {};
+  linksRead.list = [];
   
   //connect sockets
   var socket = io.connect(window.location.hostname);
@@ -19,7 +22,10 @@ $(function () {
     if($(window).scrollTop() == 0) {
       $('.description-title').css({'-webkit-box-shadow' : '', 'box-shadow' : '' });
     } else {
-      $('.description-title').css({'-webkit-box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px', 'box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px'});
+      $('.description-title').css({
+        '-webkit-box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px', 
+        'box-shadow' : 'rgba(0, 0, 0, 0.0980392) 0px 3px 3px -1px'
+      });
     }
   });
   
@@ -60,8 +66,9 @@ $(function () {
       $('#links').append(linkStr(this));
     });
     
-    //hover function goes here, since the links are only now rendered
+    //listeners for dynamic content
     articleHover();
+    storeReadLater();
   });
   
   
@@ -71,7 +78,8 @@ $(function () {
    */
    
   var listDifference = function() {
-    return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), _.pluck(_.pluck(oldLinks, "article"), "title"));
+    return _.difference(_.pluck(_.pluck(newLinks, "article"), "title"), 
+        _.pluck(_.pluck(oldLinks, "article"), "title"));
   };
   
   
@@ -93,8 +101,10 @@ $(function () {
   
   var linkStr = function(link) {
     //default string for text row, if no image is available
-    var rowString = '<div class="row-fluid">' + 
-        '<div class="link-text">' + link.article.html + '</div></div></a></article></li>';
+    var rowString = 
+      ['<div class="row-fluid">', '<div class="link-text">',
+       link.article.html, '</div></div></a></article></li>'
+      ].join('');
     
     if(link.img.length > 1) {
       rowString =  
@@ -124,21 +134,23 @@ $(function () {
         ].join('');
     }
     
-    var str = '<li class="link"><article>' +
-        title +
-        '<p class="link-info"><span class="link-footer-text">last mentioned on</span><span class="link-footer-value">' + 
-        moment(link.created_at).format('MMM Do, HH:mm:ss') + '</span><span class="separator">|</span>' + 
-        '<span class="link-footer-text">mentions:</span><span class="link-footer-value">' +
-        link.freq + '</span>' +
-        '<span class="separator">|</span>' +
-        '<span class="kippt"><a href="https://kippt.com/extensions/new/?url=' +
-        link.url.href + '&title=' + link.article.title + '" target="_blank">' +
-        'Save to Kippt</a></span>' +
-        '</span><span class="separator">|</span><span class="link-hostname">' +
-        link.url.hostname + '</span>' +
-        '</p>' +
-        '<a href="' + link.url.href + '" target="_blank">' +
-        rowString;
+    var str = 
+      ['<li class="link">', '<article>', title,
+       '<p class="link-info"><span class="link-footer-text">', 
+       'last mentioned on</span><span class="link-footer-value">' , 
+       moment(link.created_at).format('MMM Do, HH:mm:ss') , 
+       '</span><span class="separator">|</span>' , 
+       '<span class="link-footer-text">mentions:</span><span class="link-footer-value">' ,
+       link.freq , '</span>', '<span class="separator">|</span>' ,
+       '<span class="link-hostname">' , link.url.hostname , 
+       '</span>', '<span class="separator">|</span>', 
+       '<span class="kippt"><a href="https://kippt.com/extensions/new/?url=' ,
+       link.url.href , '&title=' , link.article.title , '" target="_blank">' ,
+       'Save to Kippt</a></span>' ,
+       '</span>', '<span class="separator">|</span>',
+       '<button class="btn btn-link readLater"><span>Read Later</span></button>', '</p>' ,
+       '<a href="' , link.url.href , '" target="_blank">', rowString
+      ].join('');
     
     return str;
   };
@@ -215,6 +227,21 @@ $(function () {
   
   
   /**
+   * Stores link objects in local storage for reading later
+   */
+  
+  function storeReadLater() {
+    $('.readLater').on('click', function() {
+      var url = $(this).parents().find('a').attr('href');
+      var linkObject = _.find(oldLinks, function(link){ console.log(link.url.href); return link.url.href == url;});
+      linksRead.list.push(linkObject);
+      localStorage.linksRead = JSON.stringify(linksRead);
+      console.log(JSON.parse(localStorage.linksRead).list);
+    });
+  };
+  
+  
+  /**
    * Hover functionality for articles
    */
   
@@ -225,10 +252,11 @@ $(function () {
         $this.find('.label').fadeOut(1500, function() { $(this).remove(); });
         $this.find('.link-title').removeClass('new');
       }  
-      $this.find('.link-title').addClass('hover');
+      $this.find('.link-title, .readLater, .kippt a').addClass('hover');
     },
     function(){
-      $(this).find('.link-title').removeClass('hover');
+      $(this).find('.link-title, .readLater, .kippt a').removeClass('hover');
+
     });
   }
   
@@ -240,7 +268,7 @@ $(function () {
   $('#newLinks').on('mouseenter', function() {
     $('#sum').css({'color' : 'rgb(136, 172, 219)'});
     $('#newLinks-text').css({'color' : 'rgb(136, 172, 219)', 'text-decoration' : 'underline'});
-  }).on('mouseleave', function(){
+  }).on('mouseleave', function() {
     $('#sum').css({'color' : 'rgb(55,55,55)'});
     $('#newLinks-text').css({'color' : 'rgb(179, 179, 177)', 'text-decoration' : 'none'});
   });

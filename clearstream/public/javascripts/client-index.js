@@ -2,11 +2,8 @@ $(function () {
   
   var indexUrl = document.URL;
   var topUrl = indexUrl.concat('top');
-  var newLinks = [];
-  var oldLinks = [];
-  //holds all links read for storing in localstorage
-  var linksRead = {};
-  linksRead.list = [];
+  this.newLinks = [];
+  this.oldLinks = [];
   
   //connect sockets
   var socket = io.connect(window.location.hostname);
@@ -40,7 +37,7 @@ $(function () {
     var dif = listDifference().length;
     
     /*
-     *  if clause is needed because there will always be 1 new item, since
+     * if clause is needed because there will always be 1 new item, since
      * the list is constantly updated
      */
     if(dif > 1){
@@ -66,9 +63,13 @@ $(function () {
       $('#links').append(linkStr(this));
     });
     
-    //listeners for dynamic content
+    //listeners for dynamic content 
+    $('.readLater').on('click', function() {
+      var url = $(this).closest('article').find('a').attr('href');
+      ls.store(url);
+    });
+    
     articleHover();
-    storeReadLater();
   });
   
   
@@ -158,10 +159,10 @@ $(function () {
   
   /**
    * Request the current list, clears old entries
-   * and renders the new list.
+   * and renders the new list. Usable by other modules.
    */
   
-  var render = function() {
+  function render() {
     //remove 'new' labels
     $('.label').remove();
     
@@ -223,23 +224,30 @@ $(function () {
    * link list and fill it with the new data.
    */
 
-  $('#newLinks').on('click', render); 
+  $('#newLinks, #hot').on('click', render); 
+  
+  $('#stored').on('click', renderLs);
   
   
   /**
-   * Stores link objects in local storage for reading later
+   * Renders links stored by the user
    */
-  
-  function storeReadLater() {
-    $('.readLater').on('click', function() {
-      var url = $(this).parents().find('a').attr('href');
-      var linkObject = _.find(oldLinks, function(link){ console.log(link.url.href); return link.url.href == url;});
-      linksRead.list.push(linkObject);
-      localStorage.linksRead = JSON.stringify(linksRead);
-      console.log(JSON.parse(localStorage.linksRead).list);
-    });
-  };
-  
+
+  function renderLs() { 
+    var list = ls.getList();
+    var link = {};
+    
+    if(list && list.length > 0) {
+      $('ol').empty();
+      $.each(list, function(index) {    
+        link = list[index];
+        link.isNewLink = false;
+        $('#links').append(linkStr(link));
+      });
+      
+      articleHover();
+    }
+  }
   
   /**
    * Hover functionality for articles
@@ -254,9 +262,9 @@ $(function () {
       }  
       $this.find('.link-title, .readLater, .kippt a').addClass('hover');
     },
+    
     function(){
-      $(this).find('.link-title, .readLater, .kippt a').removeClass('hover');
-
+      $(this).find('.link-title, .readLater, .kippt a').removeClass('hover')
     });
   }
   

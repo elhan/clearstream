@@ -13,6 +13,7 @@ html
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
         script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js")
+        script(src="/javascripts/localStorage.js")  
         script(src="/javascripts/client-index.js")        
         
     body
@@ -21,6 +22,8 @@ html
             .hidden-tablet.hidden-phone#cover.span3
               .span3#cover-description
                 #cover-description-inner
+                  button.btn.btn-inverse.dropdown-toggle#dropdown
+                    i.icon-caret-down
                   span#title clearstream
                   span#subtitle filter out the noise
                   #login-wrap
@@ -35,6 +38,7 @@ html
                 #description
                   .row-fluid.description-title
                     #hot WHAT'S HOT RIGHT NOW?
+                    #stored STORED ARTICLES
                     #newLinks
                       span#sum
                       span#newLinks-text

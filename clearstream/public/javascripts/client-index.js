@@ -1,7 +1,5 @@
 $(function () {
   
-  var indexUrl = document.URL;
-  var topUrl = indexUrl.concat('top');
   this.newLinks = [];
   this.oldLinks = [];
   

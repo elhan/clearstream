@@ -4,12 +4,12 @@ var ls = (function () {
   var linksRead = {};
   linksRead.list = [];
   var storedLinks = JSON.parse(localStorage.linksRead);
-  var list = storedLinks.list;
+  var storedList = storedLinks.list;
   var ls = {};
   
   
   ls.getList = function() {
-    return list;
+    return storedList;
   }
   
   /**
@@ -29,33 +29,21 @@ var ls = (function () {
   
   
   /**
-   * Loads all stored links into memory
-   */ 
-  ls.load = function() {
-    if(list.length > 0) { 
-      newLinks = list;
-      //mark the objects in the list as old
-      $.each(newLinks, function(i) {
-        newLinks[i].isNewLink = false;
-      });
-    }
-  }
-  
-  
-  /**
    * Clears links created more than a day ago from the local storage
    */ 
   function clear() {    
-    if(storedLinks !== undefined && list.length > 0) {
+    if(storedLinks !== undefined && storedList.length > 0) {
       var now = moment();
       var creationDate = {};
     
-      for(var i=0; i<list.length; i++) {
-        if(list[i]) {
-          creationDate = moment(list[i].created_at);
-          if(now.diff(creationDate, 'days') > 1) list.splice(i, 1);
+      for(var i=0; i<storedList.length; i++) {
+        if(storedList[i]) {
+          creationDate = moment(storedList[i].created_at);
+          if(now.diff(creationDate, 'days') > 1) storedList.splice(i, 1);
         }
       }
+      //necesary
+      localStorage.linksRead = JSON.stringify(storedLinks) ;
     }
   }
   
@@ -64,9 +52,9 @@ var ls = (function () {
    * Returns true if a link is already stored in the local storage
    */
   ls.contains = function(url) {
-    if(storedLinks !== undefined && list.length > 0) {
+    if(storedLinks !== undefined && storedList.length > 0) {
       try {
-        var urlList = _.pluck(_.pluck(list, 'url'), 'href');
+        var urlList = _.pluck(_.pluck(storedList, 'url'), 'href');
       } catch(e) {
         console.log(e);
       }
@@ -79,7 +67,7 @@ var ls = (function () {
    * Prints the contents of the localstorage
    */
   ls.print = function() {
-    console.log(list);
+    console.log(storedList);
   }
   
   //clear old entries

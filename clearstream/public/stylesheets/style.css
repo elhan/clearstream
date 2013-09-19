@@ -16,8 +16,6 @@ article {
 	-moz-transition:.2s;
 	-webkit-transition:.2s;
 	transition:.2s;
-	transition-timing-function: ease-in-out;
-  -webkit-transition-timing-function: ease-in-out;
 }
 
 article:hover {
@@ -36,7 +34,7 @@ article:hover {
 }
 
 #cover-description-inner {
-  padding-top: 162%;
+  padding-top: 150%;
 }
 
 #title {
@@ -126,6 +124,40 @@ article:hover {
   font-size: 14px;
 }
 
+#dropdown {
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	top: 40px;
+	left: 20px;
+	text-shadow: none;
+  border-radius: 20px;
+  background: rgb(77, 77, 77);;
+  box-shadow: none;
+  border: 0px;
+  -o-transition: .1s;
+  -ms-transition: .1s;
+  -moz-transition: .1s;
+  -webkit-transition: .1s;
+  transition: .1s;
+}
+
+#dropdown:hover {
+	background: rgb(0,0,0);
+	box-shadow:
+  0 0 0 1px white,
+  0 0 0 2px  rgb(0,0,0),
+  0 0 0 3px  rgb(0,0,0);
+  -moz-box-shadow:
+  0 0 0 1px white,
+  0 0 0 2px  rgb(0,0,0),
+  0 0 0 3px  rgb(0,0,0);
+  -webkit-shadow:
+  0 0 0 1px white,
+  0 0 0 2px rgb(0,0,0),
+  0 0 0 3px rgb(0,0,0);
+}
+
 #learn-more {
   color: #222222;
   padding-left: 0px;
@@ -165,16 +197,18 @@ article:hover {
   border-bottom: 1px solid rgb(179, 179, 177);
 }
 
-#hot {
+#hot, #stored {
+	margin-right: 20px;
   float: left;
   line-height: 40px;
   color: rgb(179, 179, 177);
 }
 
-a:hover, a:link, a:active {
+a:hover, a:link, a:active, #hot:hover, #stored:hover {
   /*color: rgb(55, 55, 55);*/
   color: rgb(77,77,77);
   text-decoration: none;
+  cursor: pointer;
 }
 
 a:visited {
@@ -231,8 +265,6 @@ a:visited {
   -moz-transition:.2s;
   -webkit-transition:.2s;
   transition:.2s;
-  transition-timing-function: ease-out;
-  -webkit-transition-timing-function: ease-out;
 }
 
 .link-title.hover {
@@ -273,8 +305,6 @@ a:visited {
   line-height: 40px;
   display: none;
   color: rgb(179, 179, 177);
-  cursor: hand; 
-  cursor: pointer;
   text-align: center;
   vertical-align: text-middle;
 }

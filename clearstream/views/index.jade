@@ -13,7 +13,8 @@ html
         script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js")
         script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js")
         script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js")
-        script(src="/javascripts/localStorage.js")  
+        script(src="/javascripts/lib/flowtype.js")
+        script(src="/javascripts/ls.js")
         script(src="/javascripts/client-index.js")        
         
     body
@@ -31,10 +32,11 @@ html
                       i.icon-twitter 
                         span Sign in with Twitter
             #text-space.span8
-              #header
+              .span8#header
                 .hidden-desktop#cover-tablet
                   span#title-tablet CLEARSTREAM
                   span#subtitle-tablet filter out the noise
+                  i.icon-reorder#dropdown-tablet  
                 #description
                   .row-fluid.description-title
                     #hot WHAT'S HOT RIGHT NOW?

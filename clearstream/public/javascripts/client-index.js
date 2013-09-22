@@ -67,6 +67,11 @@ $(function () {
       ls.store(url);
     });
     
+    $('body').flowtype({
+      minFont : 18,
+      maxFont : 30
+    });
+    
     articleHover();
   });
   

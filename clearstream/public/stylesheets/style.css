@@ -1,4 +1,6 @@
 body {
+	font-size: 18px;
+	line-height: 26px;
   font-family: Arimo;
   color: rgb(77,77,77);
   padding: 0px;
@@ -7,15 +9,15 @@ body {
 }
 
 article {
-	max-height: 340px;
-	padding: 40px 0px 40px 0px;
-	max-width: 640px;
-	border-bottom: 1px solid rgb(242, 242, 240);
-	-o-transition:.2s;
-	-ms-transition:.2s;
-	-moz-transition:.2s;
-	-webkit-transition:.2s;
-	transition:.2s;
+  max-height: 340px;
+  padding: 40px 0px 40px 0px;
+  max-width: 640px;
+  border-bottom: 1px solid rgb(242, 242, 240);
+  -o-transition:.2s;
+  -ms-transition:.2s;
+  -moz-transition:.2s;
+  -webkit-transition:.2s;
+  transition:.2s;
 }
 
 article:hover {
@@ -38,9 +40,8 @@ article:hover {
 }
 
 #title {
+	line-height: 1.33em;
   display: block;
-  line-height: 40px;
-  font-size: 30px;
   color: rgb(0,0,0);
   font-weight: 900;
   text-align: center;
@@ -48,23 +49,23 @@ article:hover {
 }
 
 #title-tablet {
-  line-height: 40px;
-  font-size: 30px;
+  line-height: 1.33em;
   color: rgb(0,0,0);
   font-weight: 900;
 }
 
 #subtitle {
+	font-size: .65em;
+	line-height: 1.1em;
   display:block;
-  font-size: 20px;
   color: rgb(179, 179, 177);
   font-weight: 100;
   text-align: center;
 }
 
 #subtitle-tablet {
+	font-size: .65em;
   padding-left: 20px;
-  font-size: 20px;
   color: rgb(179, 179, 177);
   font-weight: 100;
 }
@@ -79,6 +80,7 @@ article:hover {
 }
 
 #login-wrap {
+	line-height: .5em;
   text-align: center;
   padding: 30px;
 }
@@ -100,7 +102,7 @@ article:hover {
 }
 
 #login:hover {
-	background: #00acee !important;
+  background: #00acee !important;
   box-shadow:
   0 0 0 1px white,
   0 0 0 2px #00acee,
@@ -116,21 +118,21 @@ article:hover {
 }
 
 .icon-twitter {
-  font-size: 18px;
+	font-size: 1.22em;
 }
 
 .icon-twitter span {
+	font-size: .8em;
   padding-left: 4px;
-  font-size: 14px;
 }
 
 #dropdown {
-	position: absolute;
 	width: 40px;
-	height: 40px;
-	top: 40px;
-	left: 20px;
-	text-shadow: none;
+  height: 40px;
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  text-shadow: none;
   border-radius: 20px;
   background: rgb(77, 77, 77);;
   box-shadow: none;
@@ -143,8 +145,8 @@ article:hover {
 }
 
 #dropdown:hover {
-	background: rgb(0,0,0);
-	box-shadow:
+  background: rgb(0,0,0);
+  box-shadow:
   0 0 0 1px white,
   0 0 0 2px  rgb(0,0,0),
   0 0 0 3px  rgb(0,0,0);
@@ -158,6 +160,14 @@ article:hover {
   0 0 0 3px rgb(0,0,0);
 }
 
+#dropdown-tablet {
+	top: 10px;
+	left: 10px;
+	position: fixed;
+	width: 30px;
+  height: 30px;
+}
+
 #learn-more {
   color: #222222;
   padding-left: 0px;
@@ -166,6 +176,7 @@ article:hover {
 #text-space {
   padding-top: 102px;
   padding-left: 5%;
+  padding-right: 5%;
   margin: 0px;
   border-left: 1px solid rgb(179, 179, 177);
 }
@@ -180,16 +191,17 @@ article:hover {
 
 #header {
   width: 100%;
-  max-width: 640px;
+  max-width: 700px;
   top: 0px;
   padding-top: 40px;
   background-color: white;
   position: fixed;
   z-index: 2;
+  border-right: 60px solid transparent;
 }
 
 .description-title {
-  font-size: 12px;
+	font-size: .40em;
   font-weight: lighter;
   max-width: 640px;
   margin: 0px;
@@ -198,10 +210,13 @@ article:hover {
 }
 
 #hot, #stored {
-	margin-right: 20px;
   float: left;
   line-height: 40px;
   color: rgb(179, 179, 177);
+}
+
+#stored {
+	margin-left: 20px;
 }
 
 a:hover, a:link, a:active, #hot:hover, #stored:hover {
@@ -216,19 +231,19 @@ a:visited {
 }
 
 #links {
-	list-style: none;
+  list-style: none;
   margin-left: 0px;
   margin-bottom: 0px;
 }
 
 .link-hostname {
   color: rgb(179, 179, 177);
-  font-size: 12px;
 }
 
 .link-info {
+	overflow: hidden;
+	font-size: 10px;
   color: rgb(179, 179, 177);
-  font-size: 10px;
   margin-bottom: 20px;
 }
 
@@ -238,8 +253,8 @@ a:visited {
 }
 
 .link-text {
-  line-height: 25px;
-  font-size: 17px;
+	line-height: 1.5em;
+  font-size: .58em;
   min-height: 75px;
   max-height: 125px;
   overflow: hidden;
@@ -253,11 +268,11 @@ a:visited {
 
 .link-title {
   /*color: #222222;*/
+  line-height: 1.2em;
+  font-size: .92em;
   color: rgb(77,77,77);
-  font-size: 28px;
   font-weight: bold;
   height: auto;
-  line-height: 34px;
   margin: 0px;
   vertical-align: middle;
   -o-transition:.2s;
@@ -310,11 +325,11 @@ a:visited {
 }
 
 #sum {
+	font-size: 1.5em;
   color: rgb(55, 55, 55);
   padding-left: 5px;
   padding-right: 5px;
-  font-weight: bold;
-  font-size: 18px; 
+  font-weight: bold; 
   line-height:20px
 }
 
@@ -327,10 +342,10 @@ a:visited {
 }
 
 .readLater {
-	color: rgb(179, 179, 177);
-	border: 0px;
-	padding: 4px 0px 6px 0px;
-	font-size: 10px;
+	font-size: inherit;
+  color: rgb(179, 179, 177);
+  border: 0px;
+  padding: 4px 0px 6px 0px;
   -o-transition:.3s;
   -ms-transition:.3s;
   -moz-transition:.3s;
@@ -339,8 +354,8 @@ a:visited {
 }
 
 .readLater:hover, .kippt a:hover {
-	color: rgb(136, 172, 219) !important;
-	text-decoration: none;
+  color: rgb(136, 172, 219) !important;
+  text-decoration: none;
 }
 
 .readLater.hover, .kippt a.hover {

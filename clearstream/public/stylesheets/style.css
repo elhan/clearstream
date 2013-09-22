@@ -199,6 +199,10 @@ article:hover {
   border-right: 60px solid transparent;
 }
 
+#header {
+	padding-top: 40px;
+}
+
 #header-tablet {
 	text-align: center;
 	padding-top: 10px;
